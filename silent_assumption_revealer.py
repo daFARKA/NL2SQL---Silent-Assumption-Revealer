@@ -9,7 +9,7 @@ from prompts import (
     ASSUMPTION_REVEAL_PROMPT
 )
 
-MODEL = "qwen3.5:9b"
+MODEL = "phi4:latest"
 
 
 def load_schema(path):
@@ -31,11 +31,11 @@ def call_ollama(prompt):
     return response["message"]["content"]
 
 
-def clean_json_response(text):
+def clean_response(text, identifier):
     text = text.strip()
 
-    if text.startswith("```json"):
-        text = text.replace("```json", "")
+    if text.startswith(f"```{identifier}"):
+        text = text.replace(f"```{identifier}", "")
         text = text.replace("```", "")
 
     return text.strip()
@@ -49,7 +49,7 @@ def generate_sql(question, schema):
 
     sql = call_ollama(prompt)
 
-    return sql.strip()
+    return clean_response(sql, "sql")
 
 
 def validate_sql(sql):
@@ -69,7 +69,7 @@ def reveal_assumptions(question, schema, sql):
 
     response = call_ollama(prompt)
 
-    response = clean_json_response(response)
+    response = clean_response(response, "json")
 
     try:
         return json.loads(response)
@@ -87,7 +87,7 @@ def write_output(output):
     output_dir = Path("outputs")
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    timestamp = datetime.now().strftime("%Y-%m-%d--%H-%M-%S")
+    timestamp = datetime.now().strftime("%d-%m-%Y--%H-%M-%S")
     file_path = output_dir / f"output-{timestamp}.json"
 
     with open(file_path, "w", encoding="utf-8") as f:

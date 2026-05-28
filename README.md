@@ -4,14 +4,16 @@
 
 Download and Install [Ollama](https://ollama.com).
 
+Current <model_name>: phi4:latest
+
 Pull the model.
 ```
-ollama pull qwen3.5:9b
+ollama pull <model_name>
 ```
 
 Verify it works.
 ```
-ollama run qwen3.5:9b
+ollama run <model_name>
 ```
 
 Install dependencies.
