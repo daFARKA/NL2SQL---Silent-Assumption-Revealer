@@ -1,5 +1,0 @@
-Employees (id, name, department_id)
-
-Reviews (id, employee_id, score, review_date)
-
-Departments (id, name)

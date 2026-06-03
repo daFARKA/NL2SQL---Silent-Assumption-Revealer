@@ -1,8 +1,10 @@
 import json
 import ollama
 import sqlglot
+import argparse
 from datetime import datetime
 from pathlib import Path
+from tqdm import tqdm
 
 from prompts import (
     SQL_GENERATION_PROMPT,
@@ -11,11 +13,32 @@ from prompts import (
 
 MODEL = "phi4:latest"
 
+def parse_args_input_path():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("input", type=str, help="Path to the input JSON file containing queries")
+
+    args = parser.parse_args()
+    input_path = args.input
+
+    try:
+        with open(input_path, "r", encoding="utf-8") as f:
+            json.load(f)
+    except FileNotFoundError:
+        raise FileNotFoundError("Input file not found")
+    except json.JSONDecodeError:
+        raise ValueError("Input file is not valid JSON")
+
+    return input_path
 
 def load_schema(path):
     with open(path, "r", encoding="utf-8") as f:
         return f.read()
 
+def load_queries(path):
+    with open(path, "r", encoding="utf-8") as f:
+        queries = json.load(f)
+    
+    return queries
 
 def call_ollama(prompt):
     response = ollama.chat(
@@ -38,7 +61,11 @@ def clean_response(text, identifier):
         text = text.replace(f"```{identifier}", "")
         text = text.replace("```", "")
 
-    return text.strip()
+    last_idx = text.rfind("]")
+    if last_idx == -1:
+        return text.strip()
+    
+    return text[:last_idx + 1].strip()
 
 
 def generate_sql(question, schema):
@@ -79,56 +106,59 @@ def reveal_assumptions(question, schema, sql):
             "raw_response": response
         }
 
-def write_output(output):
-    formatted_output = json.dumps(output, indent=2)
-
-    print(formatted_output)
+def write_output(outputs, timestamp):
+    formatted_output = json.dumps(outputs, indent=2, ensure_ascii=False)
 
     output_dir = Path("outputs")
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    timestamp = datetime.now().strftime("%d-%m-%Y--%H-%M-%S")
-    file_path = output_dir / f"output-{timestamp}.json"
+    file_path = output_dir / f"{timestamp}.json"
 
     with open(file_path, "w", encoding="utf-8") as f:
         f.write(formatted_output)
 
-    print(f"\nSaved results to {file_path}")
+    print(f"Saved results to {file_path}")
 
 def main():
-    schema = load_schema("schema.txt")
+    input_path = parse_args_input_path()
 
-    question = input("Enter natural language query:\n> ")
+    schema = load_schema("schema_architecture_adapted.sql")
 
-    print("\nGenerating SQL...\n")
+    queries = load_queries(input_path)
 
-    sql = generate_sql(question, schema)
+    outputs = []
+    for question in tqdm(queries, desc="Processing NL queries", unit="query"):
+        sql = generate_sql(question['query'], schema)
 
-    print("Generated SQL:\n")
-    print(sql)
+        valid, result = validate_sql(sql)
 
-    valid, result = validate_sql(sql)
+        if not valid:
+            tqdm.write(f"SQL validation failed for ID: {question['id']}")
+            tqdm.write(result)
 
-    if not valid:
-        print("\nSQL validation failed:")
-        print(result)
-        return
+        assumptions = reveal_assumptions(
+            question['query'],
+            schema,
+            sql
+        )
 
-    print("\nRevealing assumptions...\n")
+        output = {
+            "id": question['id'],
+            "question": question['query'],
+            "sql": sql,
+            "ambiguities": assumptions,
+            "expected_ambiguities": question['expected_ambiguities'],
+            "validation": {
+                "valid": valid,
+                "error": result if not valid else None
+            }
+        }
 
-    assumptions = reveal_assumptions(
-        question,
-        schema,
-        sql
-    )
+        outputs.append(output)
+    
+    write_output(outputs, datetime.now().strftime("%d-%m-%Y--%H-%M-%S"))
 
-    output = {
-        "question": question,
-        "sql": sql,
-        "ambiguities": assumptions
-    }
-
-    write_output(output)
+    return
 
 
 if __name__ == "__main__":

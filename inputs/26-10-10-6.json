@@ -1,0 +1,350 @@
+[
+  {
+    "id": 10,
+    "query": "List architects who designed every bridge in Guangxi",
+    "expected_ambiguities": [
+      {
+        "type":"Linguistic & Semantic Ambiguity",
+        "subtype":"Scope"
+      }
+    ]
+  },
+  {
+    "id": 11,
+    "query": "Show bridges designed by architects from America",
+    "expected_ambiguities": [
+      {
+        "type":"Linguistic & Semantic Ambiguity",
+        "subtype":"Attachment"
+      }
+    ]
+  },
+  {
+    "id": 12,
+    "query": "Show the longest bridges",
+    "expected_ambiguities": [
+      {
+        "type":"Linguistic & Semantic Ambiguity",
+        "subtype":"Intent"
+      }
+    ]
+  },
+  {
+    "id": 13,
+    "query": "Show the newest bridges",
+    "expected_ambiguities": [
+      {
+        "type":"Linguistic & Semantic Ambiguity",
+        "subtype":"Temporal"
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "query": "Show the nationality of architects",
+    "expected_ambiguities": [
+      {
+        "type":"Schema Ambiguity",
+        "subtype":"Column"
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "query": "List structure names",
+    "expected_ambiguities": [
+      {
+        "type":"Schema Ambiguity",
+        "subtype":"Table"
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "query": "Show architects associated with bridges",
+    "expected_ambiguities": [
+      {
+        "type":"Schema Ambiguity",
+        "subtype":"Join"
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "query": "Show the average built year of mills per architect",
+    "expected_ambiguities": [
+      {
+        "type":"Schema Ambiguity",
+        "subtype":"Aggregate"
+      }
+    ]
+  },
+  {
+    "id": 18,
+    "query": "List bridges in the United States",
+    "expected_ambiguities": [
+      {
+        "type":"Data Ambiguity",
+        "subtype":"Value"
+      }
+    ]
+  },
+  {
+    "id": 19,
+    "query": "Show any bridge",
+    "expected_ambiguities": [
+      {
+        "type":"Linguistic & Semantic Ambiguity",
+        "subtype":"Intent"
+      }
+    ]
+  },
+  {
+    "id": 20,
+    "query": "Show the longest bridges in the USA",
+    "expected_ambiguities": [
+      {
+        "type":"Linguistic & Semantic Ambiguity",
+        "subtype":"Intent"
+      },
+      {
+        "type":"Data Ambiguity",
+        "subtype":"Value"
+      }
+    ]
+  },
+  {
+    "id": 21,
+    "query": "List the nationality of architects who designed every bridge in Guizhou",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Scope"
+      },
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Column"
+      }
+    ]
+  },
+  {
+    "id": 22,
+    "query": "Show the highest structures.",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Intent"
+      },
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Table"
+      }
+    ]
+  },
+  {
+    "id": 23,
+    "query": "List the nationality of architects who designed bridges",
+    "expected_ambiguities": [
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Join"
+      },
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Column"
+      }
+    ]
+  },
+  {
+    "id": 24,
+    "query": "Show the highest bridges designed by architects from America",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Intent"
+      },
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Attachment"
+      }
+    ]
+  },
+  {
+    "id": 25,
+    "query": "Show the newest bridges designed by architects from America",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Temporal"
+      },
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Attachment"
+      }
+    ]
+  },
+  {
+    "id": 26,
+    "query": "Show average built year of mills per architect from Germany",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Attachment"
+      },
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Aggregate"
+      }
+    ]
+  },
+  {
+    "id": 27,
+    "query": "List full names of architects who designed bridges located in the USA",
+    "expected_ambiguities": [
+      {
+        "type": "Data Ambiguity",
+        "subtype": "Value"
+      },
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Join"
+      }
+    ]
+  },
+  {
+    "id": 28,
+    "query": "Show average built year of mills per architect from France",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Attachment"
+      },
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Aggregate"
+      }
+    ]
+  },
+  {
+    "id": 29,
+    "query": "Show the best structures.",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Intent"
+      },
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Table"
+      }
+    ]
+  },
+  {
+    "id": 30,
+    "query": "Show top structures designed by architects from Switzerland",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Intent"
+      },
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Attachment"
+      },
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Table"
+      }
+    ]
+  },
+  {
+    "id": 31,
+    "query": "Show each nationality of newest architects",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Scope"
+      },
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Temporal"
+      },
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Column"
+      }
+    ]
+  },
+  {
+    "id": 32,
+    "query": "Show average built year of mills per architect from the UK",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Attachment"
+      },
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Aggregate"
+      },
+      {
+        "type": "Data Ambiguity",
+        "subtype": "Value"
+      }
+    ]
+  },
+  {
+    "id": 33,
+    "query": "List full names of architects who designed bridges from the USA",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Attachment"
+      },
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Join"
+      },
+      {
+        "type": "Data Ambiguity",
+        "subtype": "Value"
+      }
+    ]
+  },
+  {
+    "id": 34,
+    "query": "List the top and newest architects who designed every bridge in China.",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Scope"
+      },
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Intent"
+      },
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Temporal"
+      }
+    ]
+  },
+  {
+    "id": 35,
+    "query": "Show the most visited structures which are located in the USA.",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Intent"
+      },
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Table"
+      },
+      {
+        "type": "Data Ambiguity",
+        "subtype": "Value"
+      }
+    ]
+  }
+]

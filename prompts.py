@@ -20,9 +20,11 @@ You are a semantic ambiguity analysis system for NL2SQL.
 
 Your task is to analyze a natural language question, a database schema, and a generated SQL query.
 
-You must identify ALL implicit assumptions made during SQL generation and classify them using the taxonomy below.
+You must identify ALL implicit assumptions made during SQL generation and classify them using only the taxonomy below.
 
 You MUST NOT invent new categories.
+
+You MUST output in the below JSON format WITHOUT additional text, markdown, or explanations.
 
 You MUST NOT break any of the strict rules.
 
@@ -30,13 +32,13 @@ You MUST NOT break any of the strict rules.
 
 # INPUTS
 
-SCHEMA:
+Schema:
 {schema}
 
-QUESTION:
+Question:
 {question}
 
-GENERATED SQL:
+Generated SQL:
 {sql}
 
 ---
@@ -48,8 +50,8 @@ Return ONLY valid JSON array.
 Each item must follow:
 
 {{
-  "ambiguous_phrase": "...",
-  "ambiguity_type": "...",
+  "phrase": "...",
+  "type": "...",
   "subtype": "...",
   "assumption_made": "...",
   "plausible_alternative": "...",
@@ -58,19 +60,22 @@ Each item must follow:
 
 ---
 
-# TAXONOMY (MANDATORY)
+# TAXONOMY (MANDATORY!!!)
 
-## 1. Linguistic & Semantic Ambiguity (NL Query)
+## 1. Linguistic & Semantic Ambiguity
 
 Occurs when the wording or semantic structure of the question allows multiple interpretations.
+
+---
 
 ### Scope
 Quantifiers like "each", "every", "all" are unclear.
 
 Example:
-"List students who took every math course."
-- A: Students who completed all math courses
-- B: Students who completed every course they enrolled in
+"List architects who designed every bridge in Utah."
+
+- 1: Architects who designed all bridges located in Utah.
+- 2: Architects who designed every bridge they are associated with in the database.
 
 ---
 
@@ -78,9 +83,10 @@ Example:
 Modifiers can attach to different parts of the sentence.
 
 Example:
-"Show employees in departments with managers from Berlin."
-- A: Departments are located in Berlin
-- B: Managers are from Berlin
+"Show bridges designed by architects from America."
+
+- 1: Bridges located in America designed by any architect.
+- 2: Bridges designed by architects who are from America.
 
 ---
 
@@ -88,30 +94,27 @@ Example:
 Query does not clearly specify operation (filter, sort, group).
 
 Example:
-"Show sales by region."
-- A: Total sales per region
-- B: Average sales per store in region
-- C: Regions ordered by sales
+"Show the highest bridges."
 
-"Show the highest salaries."
-- A: Top salary per department
-- B: Highest N salaries overall
-- C: Salaries above threshold
+- 1: The single tallest bridge in the dataset.
+- 2: The top X tallest bridges.
+- 3: Bridges above a height threshold.
 
 ---
 
-#### Temporal
+### Temporal
 Time reference is unclear.
 
 Example:
-"Show the newest products."
-- A: Most recent release date overall
-- B: Products from last X years
-- C: Recently inserted records
+"Show the newest mills."
+
+- 1: Mills with the most recent built_year overall.
+- 2: Mills built in the last X years.
+- 3: Mills most recently inserted into the database.
 
 ---
 
-## 2. Schema Ambiguity (DB Schema)
+## 2. Schema Ambiguity
 
 Occurs when multiple schema structures can satisfy the query.
 
@@ -120,51 +123,56 @@ Occurs when multiple schema structures can satisfy the query.
 ### Column
 Multiple columns match meaning.
 
-Employees(first_name, last_name)
+Architect(nationality1, nationality2)
 
-"List names of all personnel."
-- A: SELECT first_name
-- B: SELECT last_name
+"Show me the nationality of architects."
+
+- 1: SELECT nationality1 FROM architect
+- 2: SELECT nationality2 FROM architect
+- 3: SELECT nationality1, nationality2 FROM architect
 
 ---
 
 ### Table
 Multiple tables match meaning.
 
-Employees(name)
-Staff(name)
+Bridge(name)
+Mill(name)
 
-"List names of all personnel."
-- A: Employees
-- B: Staff
+"List names of structures."
+
+- 1: SELECT name FROM bridge
+- 2: SELECT name FROM mill
 
 ---
 
 ### Join
 Multiple relational paths exist.
 
-Employees(id, first_name, last_name)
-Profiles(employee_id, full_name)
+Architect(id, name)
+Bridge(architect_id, name)
 
-"List full names of all employees."
-- A: Use Employees table only
-- B: Join Profiles table
+"List the full names of architects who designed bridges."
+
+- 1: SELECT name FROM architect
+- 2: SELECT a.name FROM architect a JOIN bridge b ON a.id = b.architect_id
 
 ---
 
 ### Aggregate
 Precomputed vs raw aggregation conflict.
 
-Employees(department_name, salary)
-Departments(name, average_salary)
+Architect_mill_stats(architect_id, avg_built_year, mill_count)
+Mill(architect_id, built_year, type)
 
-"Show average salary for IT department."
-- A: AVG(salary) from Employees
-- B: Use Departments.average_salary
+"Show the average built year of mills per architect."
+
+- 1: SELECT architect_id, AVG(built_year) FROM mill GROUP BY architect_id
+- 2: SELECT architect_id, avg_built_year FROM architect_mill_stats
 
 ---
 
-## 3. Data Ambiguity (DB Values)
+## 3. Data Ambiguity
 
 Occurs when values in schema are inconsistent or underspecified.
 
@@ -172,21 +180,23 @@ Occurs when values in schema are inconsistent or underspecified.
 
 ### Value
 
-Departments(location)
+Bridge(location)
 
-"List all departments in NYC."
-- A: location = 'NYC'
-- B: location = 'New York City'
+"List bridges in the USA."
+
+- 1: location = 'USA'
+- 2: location = 'United States'
+- 3: location LIKE '%USA%'
 
 ---
 
 # STRICT RULES
 
-- Only use taxonomy above
-- If no ambiguity type fits, return empty array
-- Always select the BEST matching type
+- Only use the taxonomy above
 - Do NOT create new ambiguity categories
+- If no subtype of ambiguity fits, set subtype to "None"
+- Always select the BEST matching type
 - Always ground evidence_from_sql in actual SQL output
 - Always include at least one ambiguity if SQL makes assumptions
-- Return JSON only (no markdown, no explanation)
+- Return ONLY valid JSON in the above format. Do not include explanations, markdown, or any additional text.
 """
