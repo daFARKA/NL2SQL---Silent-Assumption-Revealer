@@ -106,8 +106,120 @@ def reveal_assumptions(question, schema, sql):
             "raw_response": response
         }
 
+def evaluate_results(outputs):
+    total_queries = len(outputs)
+
+    # Type metrics
+    tp_types = 0
+    fp_types = 0
+    fn_types = 0
+
+    # Subtype metrics
+    tp_subtypes = 0
+    fp_subtypes = 0
+    fn_subtypes = 0
+
+    # Exact ambiguity count
+    exact_count_matches = 0
+
+    for output in outputs:
+        expected = output["expected_ambiguities"]
+
+        actual = output["ambiguities"]
+        if not isinstance(actual, list):
+            actual = []
+
+        expected_types = {a["type"] for a in expected}
+        predicted_types = {
+            a.get("type")
+            for a in actual
+            if a.get("type")
+        }
+
+        expected_subtypes = {a["subtype"] for a in expected}
+        predicted_subtypes = {
+            a.get("subtype")
+            for a in actual
+            if a.get("subtype")
+        }
+
+        tp_t = len(expected_types & predicted_types)
+        fp_t = len(predicted_types - expected_types)
+        fn_t = len(expected_types - predicted_types)
+
+        tp_s = len(expected_subtypes & predicted_subtypes)
+        fp_s = len(predicted_subtypes - expected_subtypes)
+        fn_s = len(expected_subtypes - predicted_subtypes)
+
+        tp_types += tp_t
+        fp_types += fp_t
+        fn_types += fn_t
+
+        tp_subtypes += tp_s
+        fp_subtypes += fp_s
+        fn_subtypes += fn_s
+
+        count_match = len(expected) == len(actual)
+        if count_match:
+            exact_count_matches += 1
+
+    def calc_metrics(tp, fp, fn):
+
+        precision = tp / (tp + fp)
+        recall = tp / (tp + fn)
+
+        if precision + recall == 0:
+            f1 = 0
+        else:
+            f1 = 2 * precision * recall / (precision + recall)
+
+        return {
+            "true_positive": tp,
+            "false_positive": fp,
+            "false_negative": fn,
+            "precision": round(precision, 3),
+            "recall": round(recall, 3),
+            "f1": round(f1, 3)
+        }
+
+    return {
+        "queries": total_queries,
+
+        "type_metrics": calc_metrics(
+            tp_types,
+            fp_types,
+            fn_types
+        ),
+
+        "subtype_metrics": calc_metrics(
+            tp_subtypes,
+            fp_subtypes,
+            fn_subtypes
+        ),
+
+        "ambiguity_count": {
+            "exact_matches": exact_count_matches,
+            "total": total_queries,
+            "accuracy": round(
+                exact_count_matches / total_queries,
+                3
+            )
+        }
+    }
+
 def write_output(outputs, timestamp):
-    formatted_output = json.dumps(outputs, indent=2, ensure_ascii=False)
+    evaluation = evaluate_results(outputs)
+
+    final_output = {
+        "results": outputs,
+        "evaluation": evaluation
+    }
+
+    formatted_output = json.dumps(
+        final_output,
+        indent=2,
+        ensure_ascii=False
+    )
 
     output_dir = Path("outputs")
     output_dir.mkdir(parents=True, exist_ok=True)
