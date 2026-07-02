@@ -164,9 +164,15 @@ def evaluate_results(outputs):
             exact_count_matches += 1
 
     def calc_metrics(tp, fp, fn):
+        if tp + fp == 0:
+            precision = 0
+        else:
+            precision = tp / (tp + fp)
 
-        precision = tp / (tp + fp)
-        recall = tp / (tp + fn)
+        if tp + fn == 0:
+            recall = 0
+        else:
+            recall = tp / (tp + fn)
 
         if precision + recall == 0:
             f1 = 0
