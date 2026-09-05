@@ -137,11 +137,15 @@ def evaluate_results(outputs):
             if a.get("type")
         }
 
-        expected_subtypes = {a["subtype"] for a in expected}
+        expected_subtypes = {
+            (a["type"], a["subtype"])
+            for a in expected
+            if a.get("type") and a.get("subtype")
+        }
         predicted_subtypes = {
-            a.get("subtype")
+            (a.get("type"), a.get("subtype"))
             for a in actual
-            if a.get("subtype")
+            if a.get("type") and a.get("subtype")
         }
 
         tp_t = len(expected_types & predicted_types)
