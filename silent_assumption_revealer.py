@@ -19,6 +19,7 @@ def parse_args_input_path():
 
     args = parser.parse_args()
     input_path = args.input
+    input_path = "inputs/" + input_path
 
     try:
         with open(input_path, "r", encoding="utf-8") as f:
