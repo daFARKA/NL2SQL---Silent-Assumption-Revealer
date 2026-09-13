@@ -1,7 +1,7 @@
 [
   {
-    "id": 201,
-    "query": "List architects who designed all bridges in Guangxi",
+    "id": 20,
+    "query": "Find architects with bridges in Utah and China",
     "expected_ambiguities": [
       {
         "type": "Linguistic & Semantic Ambiguity",
@@ -10,38 +10,8 @@
     ]
   },
   {
-    "id": 202,
-    "query": "Show bridges built by architects from France",
-    "expected_ambiguities": [
-      {
-        "type": "Linguistic & Semantic Ambiguity",
-        "subtype": "Attachment"
-      }
-    ]
-  },
-  {
-    "id": 203,
-    "query": "Show the shortest bridges",
-    "expected_ambiguities": [
-      {
-        "type": "Linguistic & Semantic Ambiguity",
-        "subtype": "Intent"
-      }
-    ]
-  },
-  {
-    "id": 204,
-    "query": "Show modern mills",
-    "expected_ambiguities": [
-      {
-        "type": "Linguistic & Semantic Ambiguity",
-        "subtype": "Temporal"
-      }
-    ]
-  },
-  {
-    "id": 205,
-    "query": "Show architect nationality",
+    "id": 21,
+    "query": "Show bridges designed by architects with multiple nationalities",
     "expected_ambiguities": [
       {
         "type": "Schema Ambiguity",
@@ -50,38 +20,8 @@
     ]
   },
   {
-    "id": 206,
-    "query": "List structure locations",
-    "expected_ambiguities": [
-      {
-        "type": "Schema Ambiguity",
-        "subtype": "Table"
-      }
-    ]
-  },
-  {
-    "id": 207,
-    "query": "List architects who have mills",
-    "expected_ambiguities": [
-      {
-        "type": "Schema Ambiguity",
-        "subtype": "Join"
-      }
-    ]
-  },
-  {
-    "id": 208,
-    "query": "Display mean build year of mills per architect",
-    "expected_ambiguities": [
-      {
-        "type": "Schema Ambiguity",
-        "subtype": "Aggregate"
-      }
-    ]
-  },
-  {
-    "id": 209,
-    "query": "List bridges in America",
+    "id": 22,
+    "query": "Show bridges near canyon areas",
     "expected_ambiguities": [
       {
         "type": "Data Ambiguity",
@@ -90,16 +30,76 @@
     ]
   },
   {
-    "id": 210,
-    "query": "Show the newest mills designed by architects from Germany",
+    "id": 23,
+    "query": "List architects who worked on every structure",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Scope"
+      }
+    ]
+  },
+  {
+    "id": 24,
+    "query": "Show mills built recently",
     "expected_ambiguities": [
       {
         "type": "Linguistic & Semantic Ambiguity",
         "subtype": "Temporal"
+      }
+    ]
+  },
+  {
+    "id": 25,
+    "query": "Find the longest structures",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Intent"
       },
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Table"
+      }
+    ]
+  },
+  {
+    "id": 26,
+    "query": "Show architects and their bridges in Colorado",
+    "expected_ambiguities": [
       {
         "type": "Linguistic & Semantic Ambiguity",
         "subtype": "Attachment"
+      }
+    ]
+  },
+  {
+    "id": 27,
+    "query": "List the earliest built mills for each architect",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Scope"
+      }
+    ]
+  },
+  {
+    "id": 28,
+    "query": "Show the top architects by mill production",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Intent"
+      }
+    ]
+  },
+  {
+    "id": 29,
+    "query": "Find architects from the United States",
+    "expected_ambiguities": [
+      {
+        "type": "Data Ambiguity",
+        "subtype": "Value"
       }
     ]
   }

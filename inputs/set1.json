@@ -1,27 +1,7 @@
 [
   {
-    "id": 101,
-    "query": "Find architects who built every bridge in China",
-    "expected_ambiguities": [
-      {
-        "type": "Linguistic & Semantic Ambiguity",
-        "subtype": "Scope"
-      }
-    ]
-  },
-  {
-    "id": 102,
-    "query": "Show mills designed by architects from Canada",
-    "expected_ambiguities": [
-      {
-        "type": "Linguistic & Semantic Ambiguity",
-        "subtype": "Attachment"
-      }
-    ]
-  },
-  {
-    "id": 103,
-    "query": "Show the longest bridges",
+    "id": 10,
+    "query": "Show bridges longer than 70",
     "expected_ambiguities": [
       {
         "type": "Linguistic & Semantic Ambiguity",
@@ -30,29 +10,13 @@
     ]
   },
   {
-    "id": 104,
-    "query": "Show the oldest mills",
+    "id": 11,
+    "query": "List architects and their modern structures",
     "expected_ambiguities": [
       {
         "type": "Linguistic & Semantic Ambiguity",
         "subtype": "Temporal"
-      }
-    ]
-  },
-  {
-    "id": 105,
-    "query": "Show the length of bridges",
-    "expected_ambiguities": [
-      {
-        "type": "Schema Ambiguity",
-        "subtype": "Column"
-      }
-    ]
-  },
-  {
-    "id": 106,
-    "query": "List all structures",
-    "expected_ambiguities": [
+      },
       {
         "type": "Schema Ambiguity",
         "subtype": "Table"
@@ -60,18 +24,8 @@
     ]
   },
   {
-    "id": 107,
-    "query": "Show architects related to mills",
-    "expected_ambiguities": [
-      {
-        "type": "Schema Ambiguity",
-        "subtype": "Join"
-      }
-    ]
-  },
-  {
-    "id": 108,
-    "query": "Show the average built year of mills for each architect",
+    "id": 12,
+    "query": "Find the total number of mills built by each architect",
     "expected_ambiguities": [
       {
         "type": "Schema Ambiguity",
@@ -80,8 +34,8 @@
     ]
   },
   {
-    "id": 109,
-    "query": "List bridges located in the United States",
+    "id": 13,
+    "query": "Show mills located in CH",
     "expected_ambiguities": [
       {
         "type": "Data Ambiguity",
@@ -90,16 +44,66 @@
     ]
   },
   {
-    "id": 110,
-    "query": "Show the longest bridges designed by architects from America",
+    "id": 14,
+    "query": "Find the largest bridge designed by male architects",
     "expected_ambiguities": [
       {
         "type": "Linguistic & Semantic Ambiguity",
         "subtype": "Intent"
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "query": "Show all Dutch mills",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Intent"
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "query": "List all structures and their locations",
+    "expected_ambiguities": [
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Table"
       },
       {
         "type": "Linguistic & Semantic Ambiguity",
-        "subtype": "Attachment"
+        "subtype": "Scope"
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "query": "Find the average bridge length per architect",
+    "expected_ambiguities": [
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Aggregate"
+      }
+    ]
+  },
+  {
+    "id": 18,
+    "query": "Show bridges in America",
+    "expected_ambiguities": [
+      {
+        "type": "Data Ambiguity",
+        "subtype": "Value"
+      }
+    ]
+  },
+  {
+    "id": 19,
+    "query": "List architects who designed old mills",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Temporal"
       }
     ]
   }

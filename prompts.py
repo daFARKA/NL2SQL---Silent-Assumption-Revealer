@@ -72,10 +72,12 @@ Occurs when the wording or semantic structure of the question allows multiple in
 Quantifiers like "each", "every", "all" are unclear.
 
 Example:
-"List architects who designed every bridge in Utah."
+"List architects who designed every bridge."
 
-- 1: Architects who designed all bridges located in Utah.
+- 1: Architects who designed all bridges.
 - 2: Architects who designed every bridge they are associated with in the database.
+
+Scope is a subtype of Linguistic & Semantic Ambiguity.
 
 ---
 
@@ -87,6 +89,8 @@ Example:
 
 - 1: Bridges located in America designed by any architect.
 - 2: Bridges designed by architects who are from America.
+
+Attachment is a subtype of Linguistic & Semantic Ambiguity.
 
 ---
 
@@ -100,6 +104,8 @@ Example:
 - 2: The top X tallest bridges.
 - 3: Bridges above a height threshold.
 
+Intent is a subtype of Linguistic & Semantic Ambiguity.
+
 ---
 
 ### Temporal
@@ -111,6 +117,8 @@ Example:
 - 1: Mills with the most recent built_year overall.
 - 2: Mills built in the last X years.
 - 3: Mills most recently inserted into the database.
+
+Temporal is a subtype of Linguistic & Semantic Ambiguity.
 
 ---
 
@@ -131,6 +139,8 @@ Architect(nationality1, nationality2)
 - 2: SELECT nationality2 FROM architect
 - 3: SELECT nationality1, nationality2 FROM architect
 
+Column is a subtype of Schema Ambiguity.
+
 ---
 
 ### Table
@@ -143,6 +153,8 @@ Mill(name)
 
 - 1: SELECT name FROM bridge
 - 2: SELECT name FROM mill
+
+Table is a subtype of Schema Ambiguity.
 
 ---
 
@@ -157,6 +169,8 @@ Bridge(architect_id, name)
 - 1: SELECT name FROM architect
 - 2: SELECT a.name FROM architect a JOIN bridge b ON a.id = b.architect_id
 
+Join is a subtype of Schema Ambiguity.
+
 ---
 
 ### Aggregate
@@ -169,6 +183,8 @@ Mill(architect_id, built_year, type)
 
 - 1: SELECT architect_id, AVG(built_year) FROM mill GROUP BY architect_id
 - 2: SELECT architect_id, avg_built_year FROM architect_mill_stats
+
+Aggregate is a subtype of Schema Ambiguity.
 
 ---
 
@@ -188,13 +204,15 @@ Bridge(location)
 - 2: location = 'United States'
 - 3: location LIKE '%USA%'
 
+Value is a subtype of Data Ambiguity.
+
 ---
 
 # STRICT RULES
 
 - Only use the taxonomy above
-- Do NOT create new ambiguity categories
-- If no subtype of ambiguity fits, set subtype to "None"
+- Do NOT create new ambiguity types
+- Do NOT use the same ambiguity type more than once.
 - Always select the BEST matching type
 - Always ground evidence_from_sql in actual SQL output
 - Always include at least one ambiguity if SQL makes assumptions

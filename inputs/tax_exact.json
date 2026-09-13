@@ -1,7 +1,7 @@
 [
   {
     "id": 1,
-    "query": "List architects who designed every bridge in Utah",
+    "query": "List architects who designed every bridge",
     "expected_ambiguities": [
       {
         "type": "Linguistic & Semantic Ambiguity",

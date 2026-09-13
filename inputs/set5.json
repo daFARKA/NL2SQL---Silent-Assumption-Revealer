@@ -1,47 +1,7 @@
 [
   {
-    "id": 501,
-    "query": "Find architects who designed every bridge in Arizona",
-    "expected_ambiguities": [
-      {
-        "type": "Linguistic & Semantic Ambiguity",
-        "subtype": "Scope"
-      }
-    ]
-  },
-  {
-    "id": 502,
-    "query": "List mills built by architects from Great Britain",
-    "expected_ambiguities": [
-      {
-        "type": "Linguistic & Semantic Ambiguity",
-        "subtype": "Attachment"
-      }
-    ]
-  },
-  {
-    "id": 503,
-    "query": "Show the lowest bridges",
-    "expected_ambiguities": [
-      {
-        "type": "Linguistic & Semantic Ambiguity",
-        "subtype": "Intent"
-      }
-    ]
-  },
-  {
-    "id": 504,
-    "query": "Show earliest constructed bridges",
-    "expected_ambiguities": [
-      {
-        "type": "Linguistic & Semantic Ambiguity",
-        "subtype": "Temporal"
-      }
-    ]
-  },
-  {
-    "id": 505,
-    "query": "Display the span of bridges",
+    "id": 50,
+    "query": "Find the primary nationality of all architects",
     "expected_ambiguities": [
       {
         "type": "Schema Ambiguity",
@@ -50,19 +10,17 @@
     ]
   },
   {
-    "id": 506,
-    "query": "Show construction names and types",
+    "id": 51,
+    "query": "List all bridges and mills.",
     "expected_ambiguities": [
       {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Scope"
+      },
+      {
         "type": "Schema Ambiguity",
-        "subtype": "Table"
-      }
-    ]
-  },
-  {
-    "id": 507,
-    "query": "List all architects and their mills",
-    "expected_ambiguities": [
+        "subtype": "Column"
+      },
       {
         "type": "Schema Ambiguity",
         "subtype": "Join"
@@ -70,8 +28,80 @@
     ]
   },
   {
-    "id": 508,
-    "query": "Show the average built year of mills for each architect",
+    "id": 52,
+    "query": "List all structures in Afghanistan",
+    "expected_ambiguities": [
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Table"
+      },
+      {
+        "type": "Data Ambiguity",
+        "subtype": "Value"
+      },
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Scope"
+      }
+    ]
+  },
+  {
+    "id": 53,
+    "query": "Find the most prolific architect",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Intent"
+      }
+    ]
+  },
+  {
+    "id": 54,
+    "query": "Show mills older than 150 years",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Temporal"
+      }
+    ]
+  },
+  {
+    "id": 55,
+    "query": "List bridges longer than 80 meters or 250 feet",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Intent"
+      }
+    ]
+  },
+  {
+    "id": 56,
+    "query": "Show bridges designed by Frank Lloyd Wright in Utah",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Attachment"
+      }
+    ]
+  },
+  {
+    "id": 57,
+    "query": "Find total structures designed by each architect",
+    "expected_ambiguities": [
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Table"
+      },
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Scope"
+      }
+    ]
+  },
+  {
+    "id": 58,
+    "query": "Show average built year for architects with multiple mills",
     "expected_ambiguities": [
       {
         "type": "Schema Ambiguity",
@@ -80,27 +110,9 @@
     ]
   },
   {
-    "id": 509,
-    "query": "List bridges located in the United States of America",
+    "id": 59,
+    "query": "Find bridges in US states",
     "expected_ambiguities": [
-      {
-        "type": "Data Ambiguity",
-        "subtype": "Value"
-      }
-    ]
-  },
-  {
-    "id": 510,
-    "query": "List the oldest bridges designed by architects from Canada located in the USA",
-    "expected_ambiguities": [
-      {
-        "type": "Linguistic & Semantic Ambiguity",
-        "subtype": "Temporal"
-      },
-      {
-        "type": "Linguistic & Semantic Ambiguity",
-        "subtype": "Attachment"
-      },
       {
         "type": "Data Ambiguity",
         "subtype": "Value"

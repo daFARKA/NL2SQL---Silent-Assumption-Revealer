@@ -1,27 +1,7 @@
 [
   {
-    "id": 401,
-    "query": "List architects who designed all mills",
-    "expected_ambiguities": [
-      {
-        "type": "Linguistic & Semantic Ambiguity",
-        "subtype": "Scope"
-      }
-    ]
-  },
-  {
-    "id": 402,
-    "query": "Show bridges designed by architects from Canada",
-    "expected_ambiguities": [
-      {
-        "type": "Linguistic & Semantic Ambiguity",
-        "subtype": "Attachment"
-      }
-    ]
-  },
-  {
-    "id": 403,
-    "query": "Show major bridges",
+    "id": 40,
+    "query": "Find the best architects",
     "expected_ambiguities": [
       {
         "type": "Linguistic & Semantic Ambiguity",
@@ -30,8 +10,8 @@
     ]
   },
   {
-    "id": 404,
-    "query": "Show antique mills",
+    "id": 41,
+    "query": "Show bridges built in the 19th century",
     "expected_ambiguities": [
       {
         "type": "Linguistic & Semantic Ambiguity",
@@ -40,18 +20,8 @@
     ]
   },
   {
-    "id": 405,
-    "query": "Show bridge size",
-    "expected_ambiguities": [
-      {
-        "type": "Schema Ambiguity",
-        "subtype": "Column"
-      }
-    ]
-  },
-  {
-    "id": 406,
-    "query": "Count all structures",
+    "id": 42,
+    "query": "List all structures designed by Frank Gehry",
     "expected_ambiguities": [
       {
         "type": "Schema Ambiguity",
@@ -60,28 +30,18 @@
     ]
   },
   {
-    "id": 407,
-    "query": "List architects with their bridges",
+    "id": 43,
+    "query": "Find mills with high build years",
     "expected_ambiguities": [
       {
-        "type": "Schema Ambiguity",
-        "subtype": "Join"
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Intent"
       }
     ]
   },
   {
-    "id": 408,
-    "query": "Show the average construction year of mills per architect",
-    "expected_ambiguities": [
-      {
-        "type": "Schema Ambiguity",
-        "subtype": "Aggregate"
-      }
-    ]
-  },
-  {
-    "id": 409,
-    "query": "Find bridges in China",
+    "id": 44,
+    "query": "Show bridges located in National Parks",
     "expected_ambiguities": [
       {
         "type": "Data Ambiguity",
@@ -90,16 +50,56 @@
     ]
   },
   {
-    "id": 410,
-    "query": "List the nationality of architects who designed bridges",
+    "id": 45,
+    "query": "List architects who designed bridges and mills in the same place",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Intent"
+      }
+    ]
+  },
+  {
+    "id": 46,
+    "query": "Find the average year architects built structures",
     "expected_ambiguities": [
       {
         "type": "Schema Ambiguity",
-        "subtype": "Column"
+        "subtype": "Aggregate"
       },
       {
         "type": "Schema Ambiguity",
-        "subtype": "Join"
+        "subtype": "Table"
+      }
+    ]
+  },
+  {
+    "id": 47,
+    "query": "Show bridges shorter than average",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Intent"
+      }
+    ]
+  },
+  {
+    "id": 48,
+    "query": "List female architects who built bridges in China",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Attachment"
+      }
+    ]
+  },
+  {
+    "id": 49,
+    "query": "Show architects that designed every arch bridge",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Scope"
       }
     ]
   }
