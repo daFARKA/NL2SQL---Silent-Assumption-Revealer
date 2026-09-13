@@ -1,0 +1,106 @@
+[
+  {
+    "id": 401,
+    "query": "List architects who designed all mills",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Scope"
+      }
+    ]
+  },
+  {
+    "id": 402,
+    "query": "Show bridges designed by architects from Canada",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Attachment"
+      }
+    ]
+  },
+  {
+    "id": 403,
+    "query": "Show major bridges",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Intent"
+      }
+    ]
+  },
+  {
+    "id": 404,
+    "query": "Show antique mills",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Temporal"
+      }
+    ]
+  },
+  {
+    "id": 405,
+    "query": "Show bridge size",
+    "expected_ambiguities": [
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Column"
+      }
+    ]
+  },
+  {
+    "id": 406,
+    "query": "Count all structures",
+    "expected_ambiguities": [
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Table"
+      }
+    ]
+  },
+  {
+    "id": 407,
+    "query": "List architects with their bridges",
+    "expected_ambiguities": [
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Join"
+      }
+    ]
+  },
+  {
+    "id": 408,
+    "query": "Show the average construction year of mills per architect",
+    "expected_ambiguities": [
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Aggregate"
+      }
+    ]
+  },
+  {
+    "id": 409,
+    "query": "Find bridges in China",
+    "expected_ambiguities": [
+      {
+        "type": "Data Ambiguity",
+        "subtype": "Value"
+      }
+    ]
+  },
+  {
+    "id": 410,
+    "query": "List the nationality of architects who designed bridges",
+    "expected_ambiguities": [
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Column"
+      },
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Join"
+      }
+    ]
+  }
+]

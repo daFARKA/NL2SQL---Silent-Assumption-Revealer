@@ -1,0 +1,110 @@
+[
+  {
+    "id": 501,
+    "query": "Find architects who designed every bridge in Arizona",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Scope"
+      }
+    ]
+  },
+  {
+    "id": 502,
+    "query": "List mills built by architects from Great Britain",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Attachment"
+      }
+    ]
+  },
+  {
+    "id": 503,
+    "query": "Show the lowest bridges",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Intent"
+      }
+    ]
+  },
+  {
+    "id": 504,
+    "query": "Show earliest constructed bridges",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Temporal"
+      }
+    ]
+  },
+  {
+    "id": 505,
+    "query": "Display the span of bridges",
+    "expected_ambiguities": [
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Column"
+      }
+    ]
+  },
+  {
+    "id": 506,
+    "query": "Show construction names and types",
+    "expected_ambiguities": [
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Table"
+      }
+    ]
+  },
+  {
+    "id": 507,
+    "query": "List all architects and their mills",
+    "expected_ambiguities": [
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Join"
+      }
+    ]
+  },
+  {
+    "id": 508,
+    "query": "Show the average built year of mills for each architect",
+    "expected_ambiguities": [
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Aggregate"
+      }
+    ]
+  },
+  {
+    "id": 509,
+    "query": "List bridges located in the United States of America",
+    "expected_ambiguities": [
+      {
+        "type": "Data Ambiguity",
+        "subtype": "Value"
+      }
+    ]
+  },
+  {
+    "id": 510,
+    "query": "List the oldest bridges designed by architects from Canada located in the USA",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Temporal"
+      },
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Attachment"
+      },
+      {
+        "type": "Data Ambiguity",
+        "subtype": "Value"
+      }
+    ]
+  }
+]

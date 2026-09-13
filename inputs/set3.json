@@ -1,0 +1,106 @@
+[
+  {
+    "id": 301,
+    "query": "Show architects who planned every bridge in China",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Scope"
+      }
+    ]
+  },
+  {
+    "id": 302,
+    "query": "Show mills constructed by architects from Switzerland",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Attachment"
+      }
+    ]
+  },
+  {
+    "id": 303,
+    "query": "Show top bridges",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Intent"
+      }
+    ]
+  },
+  {
+    "id": 304,
+    "query": "Show recent mills",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Temporal"
+      }
+    ]
+  },
+  {
+    "id": 305,
+    "query": "Show name of all entries",
+    "expected_ambiguities": [
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Column"
+      }
+    ]
+  },
+  {
+    "id": 306,
+    "query": "Show structure IDs and names",
+    "expected_ambiguities": [
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Table"
+      }
+    ]
+  },
+  {
+    "id": 307,
+    "query": "List architects connected to bridges",
+    "expected_ambiguities": [
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Join"
+      }
+    ]
+  },
+  {
+    "id": 308,
+    "query": "Calculate average mill year for each architect",
+    "expected_ambiguities": [
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Aggregate"
+      }
+    ]
+  },
+  {
+    "id": 309,
+    "query": "Show bridges in US",
+    "expected_ambiguities": [
+      {
+        "type": "Data Ambiguity",
+        "subtype": "Value"
+      }
+    ]
+  },
+  {
+    "id": 310,
+    "query": "Show the longest bridges in the United States",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Intent"
+      },
+      {
+        "type": "Data Ambiguity",
+        "subtype": "Value"
+      }
+    ]
+  }
+]

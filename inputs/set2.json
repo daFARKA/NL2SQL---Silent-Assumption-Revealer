@@ -1,0 +1,106 @@
+[
+  {
+    "id": 201,
+    "query": "List architects who designed all bridges in Guangxi",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Scope"
+      }
+    ]
+  },
+  {
+    "id": 202,
+    "query": "Show bridges built by architects from France",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Attachment"
+      }
+    ]
+  },
+  {
+    "id": 203,
+    "query": "Show the shortest bridges",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Intent"
+      }
+    ]
+  },
+  {
+    "id": 204,
+    "query": "Show modern mills",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Temporal"
+      }
+    ]
+  },
+  {
+    "id": 205,
+    "query": "Show architect nationality",
+    "expected_ambiguities": [
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Column"
+      }
+    ]
+  },
+  {
+    "id": 206,
+    "query": "List structure locations",
+    "expected_ambiguities": [
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Table"
+      }
+    ]
+  },
+  {
+    "id": 207,
+    "query": "List architects who have mills",
+    "expected_ambiguities": [
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Join"
+      }
+    ]
+  },
+  {
+    "id": 208,
+    "query": "Display mean build year of mills per architect",
+    "expected_ambiguities": [
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Aggregate"
+      }
+    ]
+  },
+  {
+    "id": 209,
+    "query": "List bridges in America",
+    "expected_ambiguities": [
+      {
+        "type": "Data Ambiguity",
+        "subtype": "Value"
+      }
+    ]
+  },
+  {
+    "id": 210,
+    "query": "Show the newest mills designed by architects from Germany",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Temporal"
+      },
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Attachment"
+      }
+    ]
+  }
+]

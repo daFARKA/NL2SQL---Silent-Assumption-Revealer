@@ -1,0 +1,106 @@
+[
+  {
+    "id": 101,
+    "query": "Find architects who built every bridge in China",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Scope"
+      }
+    ]
+  },
+  {
+    "id": 102,
+    "query": "Show mills designed by architects from Canada",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Attachment"
+      }
+    ]
+  },
+  {
+    "id": 103,
+    "query": "Show the longest bridges",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Intent"
+      }
+    ]
+  },
+  {
+    "id": 104,
+    "query": "Show the oldest mills",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Temporal"
+      }
+    ]
+  },
+  {
+    "id": 105,
+    "query": "Show the length of bridges",
+    "expected_ambiguities": [
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Column"
+      }
+    ]
+  },
+  {
+    "id": 106,
+    "query": "List all structures",
+    "expected_ambiguities": [
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Table"
+      }
+    ]
+  },
+  {
+    "id": 107,
+    "query": "Show architects related to mills",
+    "expected_ambiguities": [
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Join"
+      }
+    ]
+  },
+  {
+    "id": 108,
+    "query": "Show the average built year of mills for each architect",
+    "expected_ambiguities": [
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Aggregate"
+      }
+    ]
+  },
+  {
+    "id": 109,
+    "query": "List bridges located in the United States",
+    "expected_ambiguities": [
+      {
+        "type": "Data Ambiguity",
+        "subtype": "Value"
+      }
+    ]
+  },
+  {
+    "id": 110,
+    "query": "Show the longest bridges designed by architects from America",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Intent"
+      },
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Attachment"
+      }
+    ]
+  }
+]
