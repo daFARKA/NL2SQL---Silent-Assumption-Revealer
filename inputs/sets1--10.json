@@ -1,0 +1,995 @@
+[
+  {
+    "id": 10,
+    "query": "Show bridges longer than 70",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Intent"
+      }
+    ]
+  },
+  {
+    "id": 11,
+    "query": "List architects and their modern structures",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Temporal"
+      },
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Table"
+      }
+    ]
+  },
+  {
+    "id": 12,
+    "query": "Show the id and name of every architect whose gender is female.",
+    "expected_ambiguities": []
+  },
+  {
+    "id": 13,
+    "query": "Show mills located in CH",
+    "expected_ambiguities": [
+      {
+        "type": "Data Ambiguity",
+        "subtype": "Value"
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "query": "Find the largest bridge designed by male architects",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Intent"
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "query": "Show all Dutch mills",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Intent"
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "query": "List the names of bridges that have length_meters strictly greater than 80.",
+    "expected_ambiguities": []
+  },
+  {
+    "id": 17,
+    "query": "Display the name and built_year for all mills that have type 'Bergmolen'.",
+    "expected_ambiguities": []
+  },
+  {
+    "id": 18,
+    "query": "Find the bridge name and length_feet for the bridge whose id is 1.",
+    "expected_ambiguities": []
+  },
+  {
+    "id": 19,
+    "query": "List architects who designed old mills",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Temporal"
+      }
+    ]
+  },
+  {
+    "id": 20,
+    "query": "Find architects with bridges in Utah and China",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Scope"
+      }
+    ]
+  },
+  {
+    "id": 21,
+    "query": "Show bridges designed by architects with multiple nationalities",
+    "expected_ambiguities": [
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Column"
+      }
+    ]
+  },
+  {
+    "id": 22,
+    "query": "Show bridges near canyon areas",
+    "expected_ambiguities": [
+      {
+        "type": "Data Ambiguity",
+        "subtype": "Value"
+      }
+    ]
+  },
+  {
+    "id": 23,
+    "query": "List the names of architects whose nationality1 is 'Canadian'.",
+    "expected_ambiguities": []
+  },
+  {
+    "id": 24,
+    "query": "Show mills built recently",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Temporal"
+      }
+    ]
+  },
+  {
+    "id": 25,
+    "query": "Find the longest structures",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Intent"
+      },
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Table"
+      }
+    ]
+  },
+  {
+    "id": 26,
+    "query": "Show the architect_id and mill_count from architect_mill_stats for the record where architect_id is 1.",
+    "expected_ambiguities": []
+  },
+  {
+    "id": 27,
+    "query": "List the earliest built mills for each architect",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Scope"
+      }
+    ]
+  },
+  {
+    "id": 28,
+    "query": "Show the top architects by mill production",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Intent"
+      }
+    ]
+  },
+  {
+    "id": 29,
+    "query": "Retrieve the name and location of every mill where built_year is strictly before 1830.",
+    "expected_ambiguities": []
+  },
+  {
+    "id": 30,
+    "query": "List mills designed by female architects in 1850",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Scope"
+      },
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Temporal"
+      }
+    ]
+  },
+  {
+    "id": 31,
+    "query": "Find the length of the Fairy Bridge",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Attachment"
+      },
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Column"
+      }
+
+    ]
+  },
+  {
+    "id": 32,
+    "query": "Count the number of structures per architect",
+    "expected_ambiguities": [
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Table"
+      }
+    ]
+  },
+  {
+    "id": 33,
+    "query": "Show bridges with a length over 200",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Intent"
+      },
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Column"
+      }
+    ]
+  },
+  {
+    "id": 34,
+    "query": "List the names of all bridges whose location text contains the substring 'China'.",
+    "expected_ambiguities": []
+  },
+  {
+    "id": 35,
+    "query": "Display the name of each architect who has nationality2 equal to 'American'.",
+    "expected_ambiguities": []
+  },
+  {
+    "id": 36,
+    "query": "Find the maximum length_meters value among all records in the bridge table.",
+    "expected_ambiguities": []
+  },
+  {
+    "id": 37,
+    "query": "Find architects with British roots",
+    "expected_ambiguities": [
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Column"
+      }
+    ]
+  },
+  {
+    "id": 38,
+    "query": "Find the minimum built_year value among all records in the mill table.",
+    "expected_ambiguities": []
+  },
+  {
+    "id": 39,
+    "query": "List the names and length_feet of all bridges sorted by length_feet in ascending order.",
+    "expected_ambiguities": []
+  },
+  {
+    "id": 40,
+    "query": "Find the best architects",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Intent"
+      }
+    ]
+  },
+  {
+    "id": 41,
+    "query": "Show bridges built in the 19th century",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Temporal"
+      }
+    ]
+  },
+  {
+    "id": 42,
+    "query": "List all structures designed by Frank Gehry",
+    "expected_ambiguities": [
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Table"
+      }
+    ]
+  },
+  {
+    "id": 43,
+    "query": "Find mills with high build years",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Intent"
+      }
+    ]
+  },
+  {
+    "id": 44,
+    "query": "Show bridges located in National Parks",
+    "expected_ambiguities": [
+      {
+        "type": "Data Ambiguity",
+        "subtype": "Value"
+      }
+    ]
+  },
+  {
+    "id": 45,
+    "query": "List architects who designed bridges and mills in the same place",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Intent"
+      }
+    ]
+  },
+  {
+    "id": 46,
+    "query": "Find the average year architects built structures",
+    "expected_ambiguities": [
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Aggregate"
+      },
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Table"
+      }
+    ]
+  },
+  {
+    "id": 47,
+    "query": "Show bridges shorter than average",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Intent"
+      }
+    ]
+  },
+  {
+    "id": 48,
+    "query": "List female architects who built bridges in China",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Attachment"
+      }
+    ]
+  },
+  {
+    "id": 49,
+    "query": "List the names and built_year of all mills sorted by built_year in descending order.",
+    "expected_ambiguities": []
+  },
+  {
+    "id": 50,
+    "query": "Find the primary nationality of all architects",
+    "expected_ambiguities": [
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Column"
+      }
+    ]
+  },
+  {
+    "id": 51,
+    "query": "List all bridges and mills.",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Scope"
+      },
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Column"
+      },
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Join"
+      }
+    ]
+  },
+  {
+    "id": 52,
+    "query": "List all structures in Afghanistan",
+    "expected_ambiguities": [
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Table"
+      },
+      {
+        "type": "Data Ambiguity",
+        "subtype": "Value"
+      },
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Scope"
+      }
+    ]
+  },
+  {
+    "id": 53,
+    "query": "Find the most prolific architect",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Intent"
+      }
+    ]
+  },
+  {
+    "id": 54,
+    "query": "Show mills older than 150 years",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Temporal"
+      }
+    ]
+  },
+  {
+    "id": 55,
+    "query": "List bridges longer than 80 meters or 250 feet",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Intent"
+      }
+    ]
+  },
+  {
+    "id": 56,
+    "query": "Show bridges designed by Frank Lloyd Wright in Utah",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Attachment"
+      }
+    ]
+  },
+  {
+    "id": 57,
+    "query": "Find total structures designed by each architect",
+    "expected_ambiguities": [
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Table"
+      },
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Scope"
+      }
+    ]
+  },
+  {
+    "id": 58,
+    "query": "Count the total number of records present in the bridge table.",
+    "expected_ambiguities": []
+  },
+  {
+    "id": 59,
+    "query": "Find bridges in US states",
+    "expected_ambiguities": [
+      {
+        "type": "Data Ambiguity",
+        "subtype": "Value"
+      }
+    ]
+  },
+  {
+    "id": 60,
+    "query": "List architects who are foreign",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Intent"
+      }
+    ]
+  },
+  {
+    "id": 61,
+    "query": "Show bridges with length between 65 and 75",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Intent"
+      },
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Column"
+      }
+    ]
+  },
+  {
+    "id": 62,
+    "query": "List mills built before the industrial era",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Temporal"
+      }
+    ]
+  },
+  {
+    "id": 63,
+    "query": "Show the name and location of all bridges that have an architect_id of 5.",
+    "expected_ambiguities": []
+  },
+  {
+    "id": 64,
+    "query": "Find the maximum span of structures",
+    "expected_ambiguities": [
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Table"
+      },
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Intent"
+      }
+    ]
+  },
+  {
+    "id": 65,
+    "query": "Show mills in Belgium",
+    "expected_ambiguities": [
+      {
+        "type": "Data Ambiguity",
+        "subtype": "Value"
+      }
+    ]
+  },
+  {
+    "id": 66,
+    "query": "List architects who designed bridges or mills in China",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Scope"
+      },
+      {
+        "type": "Data Ambiguity",
+        "subtype": "Value"
+      }
+    ]
+  },
+  {
+    "id": 67,
+    "query": "Show architects whose nationality contains American",
+    "expected_ambiguities": [
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Column"
+      }
+    ]
+  },
+  {
+    "id": 68,
+    "query": "Find the latest mill built by Le Corbusier",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Temporal"
+      },
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Join"
+      }
+    ]
+  },
+  {
+    "id": 69,
+    "query": "Show prominent architects and their works",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Intent"
+      },
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Attachment"
+      }
+    ]
+  },
+  {
+    "id": 70,
+    "query": "Show mills designed by architects born in Germany",
+    "expected_ambiguities": [
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Column"
+      }
+    ]
+  },
+  {
+    "id": 71,
+    "query": "List names and locations of all historical sites",
+    "expected_ambiguities": [
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Table"
+      }
+    ]
+  },
+  {
+    "id": 72,
+    "query": "Find bridges in the west",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Attachment"
+      }
+    ]
+  },
+  {
+    "id": 73,
+    "query": "Show the name, type, and notes of the mill whose name is 'Le Vieux Molen'.",
+    "expected_ambiguities": []
+  },
+  {
+    "id": 74,
+    "query": "List mills constructed during the Victorian era",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Temporal"
+      }
+    ]
+  },
+  {
+    "id": 75,
+    "query": "Show architects with only one nationality",
+    "expected_ambiguities": [
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Column"
+      }
+    ]
+  },
+  {
+    "id": 76,
+    "query": "Find the mill count for Frank Lloyd Wright",
+    "expected_ambiguities": [
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Aggregate"
+      }
+    ]
+  },
+  {
+    "id": 77,
+    "query": "Show the longest bridge per country",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Intent"
+      }
+    ]
+  },
+  {
+    "id": 78,
+    "query": "List structures designed by architects from Canada",
+    "expected_ambiguities": [
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Table"
+      },
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Join"
+      }
+    ]
+  },
+  {
+    "id": 79,
+    "query": "Show bridges with size greater than 200",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Intent"
+      }
+    ]
+  },
+  {
+    "id": 80,
+    "query": "Find the most significant mill",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Intent"
+      }
+    ]
+  },
+  {
+    "id": 81,
+    "query": "List architects who designed bridges in Utah and mills in Coswarem",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Attachment"
+      }
+    ]
+  },
+  {
+    "id": 82,
+    "query": "Show modern mills",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Temporal"
+      }
+    ]
+  },
+  {
+    "id": 83,
+    "query": "Calculate the average of the length_meters column for all bridges in the bridge table.",
+    "expected_ambiguities": []
+  },
+  {
+    "id": 84,
+    "query": "List the names of bridges where length_meters is between 70 and 80 inclusive.",
+    "expected_ambiguities": []
+  },
+  {
+    "id": 85,
+    "query": "List bridges located in Chad",
+    "expected_ambiguities": [
+      {
+        "type": "Data Ambiguity",
+        "subtype": "Value"
+      }
+    ]
+  },
+  {
+    "id": 86,
+    "query": "Display the architect_id values from architect_mill_stats that have mill_count strictly equal to 2.",
+    "expected_ambiguities": []
+  },
+  {
+    "id": 87,
+    "query": "Show bridges where length is 65",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Intent"
+      },
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Column"
+      }
+    ]
+  },
+  {
+    "id": 88,
+    "query": "Find mills with Dutch architects",
+    "expected_ambiguities": [
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Column"
+      }
+    ]
+  },
+  {
+    "id": 89,
+    "query": "Show the top 3 longest bridges",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Intent"
+      }
+    ]
+  },
+  {
+    "id": 90,
+    "query": "List architects and their oldest work",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Intent"
+      }
+    ]
+  },
+  {
+    "id": 91,
+    "query": "Show mills built in the mid 19th century",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Temporal"
+      }
+    ]
+  },
+  {
+    "id": 92,
+    "query": "Find bridges designed by architects with secondary nationality British",
+    "expected_ambiguities": [
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Column"
+      }
+    ]
+  },
+  {
+    "id": 93,
+    "query": "Show architects who built both bridges and mills",
+    "expected_ambiguities": [
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Join"
+      }
+    ]
+  },
+  {
+    "id": 94,
+    "query": "List the names of architects who have an empty string recorded for nationality2.",
+    "expected_ambiguities": []
+  },
+  {
+    "id": 95,
+    "query": "Find the total bridge length per iranian architect",
+    "expected_ambiguities": [
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Column"
+      },
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Aggregate"
+      }
+    ]
+  },
+  {
+    "id": 96,
+    "query": "Show the earliest bridge designed",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Temporal"
+      }
+    ]
+  },
+  {
+    "id": 97,
+    "query": "Show all structures with their names",
+    "expected_ambiguities": [
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Table"
+      }
+    ]
+  },
+  {
+    "id": 98,
+    "query": "List architects who designed all structures in Colorado",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Scope"
+      },
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Table"
+      }
+    ]
+  },
+  {
+    "id": 99,
+    "query": "Find mills with notes mentioning Dutch",
+    "expected_ambiguities": [
+      {
+        "type": "Data Ambiguity",
+        "subtype": "Value"
+      }
+    ]
+  },
+  {
+    "id": 100,
+    "query": "Show the most important structures designed by Le Corbusier",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Intent"
+      }
+    ]
+  },
+  {
+    "id": 101,
+    "query": "Show bridges with a measurement under 70",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Intent"
+      }
+    ]
+  },
+  {
+    "id": 102,
+    "query": "List architects who designed mills in Pousset or bridges in China",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Attachment"
+      }
+    ]
+  },
+  {
+    "id": 103,
+    "query": "Find the average construction year for Frank Lloyd Wright's mills",
+    "expected_ambiguities": [
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Aggregate"
+      }
+    ]
+  },
+  {
+    "id": 104,
+    "query": "Show structures in Europe",
+    "expected_ambiguities": [
+      {
+        "type": "Data Ambiguity",
+        "subtype": "Value"
+      },
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Table"
+      }
+    ]
+  },
+  {
+    "id": 105,
+    "query": "Find the longest span among all bridges",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Intent"
+      }
+    ]
+  },
+  {
+    "id": 106,
+    "query": "List mills from the late 1800s",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Temporal"
+      }
+    ]
+  },
+  {
+    "id": 107,
+    "query": "Show architects that designed every mill",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Scope"
+      }
+    ]
+  },
+  {
+    "id": 108,
+    "query": "Find all structures built after 1840",
+    "expected_ambiguities": [
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Table"
+      },
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Scope"
+      }
+    ]
+  },
+  {
+    "id": 109,
+    "query": "Show architects who designed bridges with length over 100",
+    "expected_ambiguities": [
+      {
+        "type": "Linguistic & Semantic Ambiguity",
+        "subtype": "Intent"
+      },
+      {
+        "type": "Schema Ambiguity",
+        "subtype": "Column"
+      }
+    ]
+  }
+]

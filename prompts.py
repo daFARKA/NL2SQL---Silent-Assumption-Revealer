@@ -212,9 +212,7 @@ Value is a subtype of Data Ambiguity.
 
 - Only use the taxonomy above
 - Do NOT create new ambiguity types
-- Do NOT use the same ambiguity type more than once.
 - Always select the BEST matching type
 - Always ground evidence_from_sql in actual SQL output
-- Always include at least one ambiguity if SQL makes assumptions
 - Return ONLY valid JSON in the above format. Do not include explanations, markdown, or any additional text.
 """

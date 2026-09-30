@@ -1,0 +1,2901 @@
+{
+  "results": [
+    {
+      "id": 10,
+      "question": "Show bridges longer than 70",
+      "sql": "SELECT b.id, b.name, b.location, b.length_meters, b.length_feet\nFROM bridge b\nWHERE b.length_meters > 70;",
+      "ambiguities": [
+        {
+          "phrase": "Show bridges longer than 70",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The question implies filtering bridges by length in meters greater than 70.",
+          "plausible_alternative": "The query might be intended to filter bridges with lengths greater than 70 in feet.",
+          "evidence_from_sql": "SELECT b.id, b.name, b.location, b.length_meters, b.length_feet FROM bridge b WHERE b.length_meters > 70;"
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 11,
+      "question": "List architects and their modern structures",
+      "sql": "SELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    b.id AS structure_id,\n    b.name AS structure_name,\n    b.location AS structure_location\nFROM\n    architect a\nJOIN\n    bridge b ON a.id = b.architect_id;",
+      "ambiguities": [
+        {
+          "phrase": "List architects and their modern structures",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The term 'modern structures' is assumed to refer specifically to 'bridges' in the context of this query.",
+          "plausible_alternative": "The question could have been intended to include both 'bridges' and 'mills' as modern structures.",
+          "evidence_from_sql": "The SQL query only joins the 'architect' table with the 'bridge' table, excluding the 'mill' table, indicating an assumption that 'modern structures' refers only to 'bridges'."
+        },
+        {
+          "phrase": "List architects and their modern structures",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Attachment",
+          "assumption_made": "The adjective 'modern' is assumed to modify 'structures' and not 'architects'.",
+          "plausible_alternative": "The question could be interpreted as asking for modern architects and all their structures, regardless of the time period.",
+          "evidence_from_sql": "The SQL query does not filter structures based on any time-related criteria, suggesting that 'modern' is not considered to modify 'architects' or to apply a time filter to the structures."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Temporal"
+        },
+        {
+          "type": "Schema Ambiguity",
+          "subtype": "Table"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 12,
+      "question": "Show the id and name of every architect whose gender is female.",
+      "sql": "SELECT architect.id, architect.name\nFROM architect\nWHERE architect.gender = 'female';",
+      "ambiguities": [
+        {
+          "phrase": "Show the id and name of every architect whose gender is female.",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Scope",
+          "assumption_made": "The query implies selecting all architects with gender 'female' without any additional filtering or conditions.",
+          "plausible_alternative": "The query could be interpreted to mean selecting architects based on other attributes or conditions related to gender.",
+          "evidence_from_sql": "The SQL query 'SELECT architect.id, architect.name FROM architect WHERE architect.gender = 'female';' directly selects all architects with gender 'female' without additional conditions."
+        }
+      ],
+      "expected_ambiguities": [],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 13,
+      "question": "Show mills located in CH",
+      "sql": "SELECT m.id, m.name, m.location, m.type, m.built_year, m.notes\nFROM mill m\nWHERE m.location LIKE '%CH%';",
+      "ambiguities": [
+        {
+          "phrase": "Show mills located in CH",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Value",
+          "assumption_made": "The phrase 'located in CH' is assumed to mean locations containing 'CH' as a substring.",
+          "plausible_alternative": "The question might intend to refer to mills located specifically in Switzerland or another region with 'CH' as an abbreviation.",
+          "evidence_from_sql": "The SQL query uses 'm.location LIKE '%CH%'' which implies any location containing 'CH' as a substring is considered."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Data Ambiguity",
+          "subtype": "Value"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 14,
+      "question": "Find the largest bridge designed by male architects",
+      "sql": "SELECT b.name, b.location, b.length_meters, b.length_feet\nFROM bridge b\nJOIN architect a ON b.architect_id = a.id\nWHERE a.gender = 'male'\nAND b.length_meters = (\n    SELECT MAX(length_meters)\n    FROM bridge\n    WHERE architect_id IN (\n        SELECT architect_id\n        FROM architect\n        WHERE gender = 'male'\n    )\n);",
+      "ambiguities": [
+        {
+          "phrase": "Find the largest bridge designed by male architects",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The question intends to find the single largest bridge designed by male architects, rather than a list of large bridges.",
+          "plausible_alternative": "The question could mean to find a list of bridges designed by male architects that are larger than a certain threshold.",
+          "evidence_from_sql": "The SQL query selects the bridge with the maximum length_meters using MAX(length_meters) in a subquery, indicating the intent to find only the single largest bridge."
+        },
+        {
+          "phrase": "Find the largest bridge designed by male architects",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Scope",
+          "assumption_made": "The question assumes that 'largest' refers to the length in meters.",
+          "plausible_alternative": "The question could mean to find the largest bridge based on another dimension, such as length in feet or other criteria.",
+          "evidence_from_sql": "The SQL query uses b.length_meters for comparison, assuming that 'largest' refers to the length in meters."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 15,
+      "question": "Show all Dutch mills",
+      "sql": "SELECT m.id, m.location, m.name, m.type, m.built_year, m.notes\nFROM mill m\nWHERE m.notes LIKE '%Molenechos (Dutch)%';",
+      "ambiguities": [
+        {
+          "phrase": "Show all Dutch mills",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The query intends to filter mills with notes containing 'Molenechos (Dutch)' to identify Dutch mills.",
+          "plausible_alternative": "The query could alternatively mean to filter mills based on a different attribute or condition to identify Dutch mills, such as a specific architect known for Dutch mills.",
+          "evidence_from_sql": "The SQL uses `WHERE m.notes LIKE '%Molenechos (Dutch)%'` to filter Dutch mills, assuming 'Molenechos (Dutch)' in notes indicates a Dutch mill."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 16,
+      "question": "List the names of bridges that have length_meters strictly greater than 80.",
+      "sql": "SELECT name\nFROM bridge\nWHERE length_meters > 80;",
+      "ambiguities": [
+        {
+          "phrase": "List the names of bridges that have length_meters strictly greater than 80.",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The query intends to filter bridges with length_meters greater than 80, not including those exactly equal to 80.",
+          "plausible_alternative": "The query might have intended to include bridges with length_meters greater than or equal to 80.",
+          "evidence_from_sql": "The SQL query uses 'length_meters > 80' to filter records."
+        }
+      ],
+      "expected_ambiguities": [],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 17,
+      "question": "Display the name and built_year for all mills that have type 'Bergmolen'.",
+      "sql": "SELECT m.name, m.built_year\nFROM mill m\nWHERE m.type = 'Bergmolen';",
+      "ambiguities": [
+        {
+          "phrase": "all mills that have type 'Bergmolen'",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Scope",
+          "assumption_made": "The question assumes 'all' means every mill in the database with the type 'Bergmolen'.",
+          "plausible_alternative": "The question might imply only considering mills with additional unspecified criteria.",
+          "evidence_from_sql": "The SQL query uses 'WHERE m.type = 'Bergmolen'' to filter all matching rows, indicating it considers every mill with the specified type."
+        }
+      ],
+      "expected_ambiguities": [],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 18,
+      "question": "Find the bridge name and length_feet for the bridge whose id is 1.",
+      "sql": "SELECT \"name\", \"length_feet\"\nFROM \"bridge\"\nWHERE \"id\" = 1;",
+      "ambiguities": [],
+      "expected_ambiguities": [],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 19,
+      "question": "List architects who designed old mills",
+      "sql": "SELECT a.id, a.name, a.nationality1, a.nationality2, a.gender\nFROM architect a\nWHERE a.id IN (\n    SELECT architect_id\n    FROM architect_mill_stats\n    WHERE earliest_built_year < 1900\n);",
+      "ambiguities": [
+        {
+          "phrase": "List architects who designed old mills",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Temporal",
+          "assumption_made": "The phrase 'old mills' is assumed to mean mills built before 1900.",
+          "plausible_alternative": "'Old mills' could refer to mills built before a different year or based on different criteria such as age relative to the present or historical significance.",
+          "evidence_from_sql": "The generated SQL filters for `earliest_built_year < 1900` in `architect_mill_stats` which assumes 'old' refers to a specific historical cutoff of 1900."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Temporal"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 20,
+      "question": "Find architects with bridges in Utah and China",
+      "sql": "SELECT DISTINCT a.id, a.name, a.nationality1, a.nationality2, a.gender\nFROM architect a\nJOIN bridge b ON a.id = b.architect_id\nWHERE b.location LIKE '%Utah%'\n   OR b.location LIKE '%China%';",
+      "ambiguities": [
+        {
+          "phrase": "Find architects with bridges in Utah and China",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The query assumes that the user wants architects who have designed bridges in either Utah or China, not necessarily both.",
+          "plausible_alternative": "The query could alternatively be interpreted as finding architects who have designed bridges in both Utah and China.",
+          "evidence_from_sql": "The SQL query uses OR in the WHERE clause to find architects with bridges in either 'Utah' or 'China'."
+        },
+        {
+          "phrase": "Find architects with bridges in Utah and China",
+          "type": "Data Ambiguity",
+          "subtype": "Value",
+          "assumption_made": "The query assumes that 'Utah' and 'China' are sufficient identifiers for the locations of bridges, without considering variations or additional context in the location names.",
+          "plausible_alternative": "The query could consider variations in location names, such as 'United States' for 'USA' or 'China' for 'Guangxi, China'.",
+          "evidence_from_sql": "The SQL query uses LIKE '%Utah%' and LIKE '%China%' to match any location containing these substrings."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Scope"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 21,
+      "question": "Show bridges designed by architects with multiple nationalities",
+      "sql": "SELECT b.id, b.name, b.location, b.length_meters, b.length_feet\nFROM bridge b\nJOIN architect a ON b.architect_id = a.id\nWHERE a.nationality1 != '' AND a.nationality2 != ''\nAND a.nationality1 != a.nationality2;",
+      "ambiguities": [
+        {
+          "phrase": "Show bridges designed by architects with multiple nationalities",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Attachment",
+          "assumption_made": "The phrase 'with multiple nationalities' is interpreted to mean architects who have non-empty values for both 'nationality1' and 'nationality2' fields, and these fields must be different.",
+          "plausible_alternative": "An alternative interpretation could be that the phrase means architects with at least one non-empty nationality field, without requiring both to be non-empty or different.",
+          "evidence_from_sql": "The SQL uses `a.nationality1 != '' AND a.nationality2 != '' AND a.nationality1 != a.nationality2` to filter architects, which assumes both nationality fields must be filled and different."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Schema Ambiguity",
+          "subtype": "Column"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 22,
+      "question": "Show bridges near canyon areas",
+      "sql": "SELECT b.id, b.name, b.location, b.length_meters, b.length_feet\nFROM bridge b\nWHERE b.location LIKE '%Canyon%'\n   OR b.location LIKE '%Canyon Park%'\n   OR b.location LIKE '%National Park%'\n   OR b.location LIKE '%Dinosaur%'\n   OR b.location LIKE '%Sanostee%';",
+      "ambiguities": [
+        {
+          "phrase": "Show bridges near canyon areas",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The query intends to find bridges located in canyon areas.",
+          "plausible_alternative": "The query could also intend to find bridges that are near canyon areas, without necessarily being located within them.",
+          "evidence_from_sql": "The SQL query uses the LIKE operator to match locations containing 'Canyon', 'Canyon Park', 'National Park', 'Dinosaur', or 'Sanostee', which may not strictly mean 'near' but rather 'in' or 'associated with'."
+        },
+        {
+          "phrase": "Show bridges near canyon areas",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Attachment",
+          "assumption_made": "The term 'near canyon areas' is interpreted as part of the bridge location names.",
+          "plausible_alternative": "The term 'near canyon areas' could be interpreted as a geographical proximity rather than a direct mention in the location name.",
+          "evidence_from_sql": "The SQL query does not account for geographical proximity but directly matches location names containing specific keywords."
+        },
+        {
+          "phrase": "Show bridges near canyon areas",
+          "type": "Data Ambiguity",
+          "subtype": "Value",
+          "assumption_made": "Locations containing 'Canyon', 'Canyon Park', 'National Park', 'Dinosaur', or 'Sanostee' are considered to be canyon areas.",
+          "plausible_alternative": "Different interpretations of what constitutes a 'canyon area' could lead to different location keywords being relevant.",
+          "evidence_from_sql": "The SQL query explicitly uses LIKE conditions with specific substrings, assuming these substrings are sufficient to identify canyon areas."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Data Ambiguity",
+          "subtype": "Value"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 23,
+      "question": "List the names of architects whose nationality1 is 'Canadian'.",
+      "sql": "SELECT name FROM architect WHERE nationality1 = 'Canadian';",
+      "ambiguities": [
+        {
+          "phrase": "nationality1 is 'Canadian'",
+          "type": "Data Ambiguity",
+          "subtype": "Value",
+          "assumption_made": "The term 'Canadian' is assumed to be represented exactly as 'Canadian' in the database without variations like 'Canada' or 'Canadien'.",
+          "plausible_alternative": "The nationality could also be represented in different forms such as 'Canada' or 'Canadien'.",
+          "evidence_from_sql": "SELECT name FROM architect WHERE nationality1 = 'Canadian';"
+        }
+      ],
+      "expected_ambiguities": [],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 24,
+      "question": "Show mills built recently",
+      "sql": "SELECT m.id, m.name, m.location, m.type, m.built_year\nFROM mill m\nWHERE m.built_year >= (\n    SELECT AVG(built_year)\n    FROM mill\n    WHERE built_year >= (\n        SELECT earliest_built_year\n        FROM architect_mill_stats\n        LIMIT 1\n    )\n);",
+      "ambiguities": [
+        {
+          "phrase": "Show mills built recently",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Temporal",
+          "assumption_made": "The query assumes that 'recently' refers to mills with a built_year greater than or equal to the average built_year of mills from the earliest built year onwards.",
+          "plausible_alternative": "'Recently' could mean mills built in the last few years, such as within the last decade.",
+          "evidence_from_sql": "The SQL uses a nested subquery to calculate an average built_year from a subset of mills, defining 'recently' as any built_year greater than or equal to this calculated average."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Temporal"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 25,
+      "question": "Find the longest structures",
+      "sql": "SELECT b.id, b.name, b.location, b.length_meters AS length_meters, b.length_feet AS length_feet\nFROM bridge b\nWHERE b.length_meters = (SELECT MAX(length_meters) FROM bridge)\n   OR b.length_feet = (SELECT MAX(length_feet) FROM bridge);",
+      "ambiguities": [
+        {
+          "phrase": "Find the longest structures",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The question is interpreted as finding structures with the maximum length, either in meters or feet.",
+          "plausible_alternative": "The question could mean finding all structures that are longer than a certain threshold, or it could be interpreted as finding the longest structure in each unit of measurement separately.",
+          "evidence_from_sql": "The SQL query uses MAX(length_meters) and MAX(length_feet) to determine the longest structures, implying an intent to find the absolute longest structures."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent"
+        },
+        {
+          "type": "Schema Ambiguity",
+          "subtype": "Table"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 26,
+      "question": "Show the architect_id and mill_count from architect_mill_stats for the record where architect_id is 1.",
+      "sql": "SELECT architect_id, mill_count\nFROM architect_mill_stats\nWHERE architect_id = 1;",
+      "ambiguities": [],
+      "expected_ambiguities": [],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 27,
+      "question": "List the earliest built mills for each architect",
+      "sql": "SELECT a.id, a.name, m.id AS mill_id, m.location, m.name AS mill_name, m.built_year\nFROM architect a\nJOIN mill m ON a.id = m.architect_id\nJOIN architect_mill_stats s ON a.id = s.architect_id\nWHERE s.earliest_built_year = m.built_year\nORDER BY a.id, m.built_year;",
+      "ambiguities": [
+        {
+          "phrase": "List the earliest built mills for each architect",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Scope",
+          "assumption_made": "The question assumes that 'earliest built mills' refers to mills with the smallest 'built_year' value for each architect, and that there is only one such mill per architect.",
+          "plausible_alternative": "The question could be interpreted as listing all mills that have the earliest 'built_year' for each architect, including multiple mills if they share the same 'built_year'.",
+          "evidence_from_sql": "The SQL uses 's.earliest_built_year = m.built_year' to filter mills, assuming there is only one earliest mill per architect."
+        },
+        {
+          "phrase": "List the earliest built mills for each architect",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Temporal",
+          "assumption_made": "The question assumes that 'earliest built' refers strictly to the 'built_year' column in the 'mill' table.",
+          "plausible_alternative": "The question could be interpreted to mean the earliest date of any record associated with the mill, such as the date it was added to the database, if such a column existed.",
+          "evidence_from_sql": "The SQL query selects based on 'm.built_year', assuming it is the temporal reference for 'earliest built'."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Scope"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 28,
+      "question": "Show the top architects by mill production",
+      "sql": "SELECT\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    ams.mill_count,\n    ams.avg_built_year\nFROM\n    architect a\nJOIN\n    architect_mill_stats ams ON a.id = ams.architect_id\nORDER BY\n    ams.mill_count DESC, ams.avg_built_year DESC\nLIMIT 5;",
+      "ambiguities": [
+        {
+          "phrase": "Show the top architects by mill production",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The query assumes sorting 'top architects' by 'mill production' means sorting by 'mill_count' and 'avg_built_year' in descending order.",
+          "plausible_alternative": "The user might have intended 'top architects' based only on 'mill_count', or using a different criterion such as 'earliest_built_year' or 'latest_built_year'.",
+          "evidence_from_sql": "ORDER BY ams.mill_count DESC, ams.avg_built_year DESC"
+        },
+        {
+          "phrase": "Show the top architects by mill production",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The query assumes 'top' means the top 5 architects, which is reflected in the LIMIT 5 clause.",
+          "plausible_alternative": "The user might have intended to retrieve more than 5 architects, or all architects with non-zero mill production.",
+          "evidence_from_sql": "LIMIT 5"
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 29,
+      "question": "Retrieve the name and location of every mill where built_year is strictly before 1830.",
+      "sql": "SELECT m.name, m.location\nFROM mill m\nWHERE m.built_year < 1830;",
+      "ambiguities": [
+        {
+          "phrase": "built_year is strictly before 1830",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Temporal",
+          "assumption_made": "The phrase 'strictly before 1830' is interpreted as 'built_year < 1830' in SQL.",
+          "plausible_alternative": "The question might imply a different temporal reference, such as 'built_year <= 1829'.",
+          "evidence_from_sql": "The SQL condition 'm.built_year < 1830' directly corresponds to the interpretation of 'strictly before 1830'."
+        }
+      ],
+      "expected_ambiguities": [],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 30,
+      "question": "List mills designed by female architects in 1850",
+      "sql": "SELECT m.id, m.name, m.location, m.type, m.built_year\nFROM mill m\nJOIN architect_mill_stats ams ON m.architect_id = ams.architect_id\nWHERE m.built_year = 1850\nAND EXISTS (\n    SELECT 1 FROM architect a\n    WHERE a.id = m.architect_id\n    AND a.gender = 'female'\n);",
+      "ambiguities": [
+        {
+          "phrase": "List mills designed by female architects in 1850",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Scope",
+          "assumption_made": "The question assumes that the database contains entries for female architects who designed mills in the year 1850.",
+          "plausible_alternative": "There may not be any mills designed by female architects in 1850, or there may be no female architects in the database at all.",
+          "evidence_from_sql": "The WHERE clause filters mills built in 1850 and checks for female architects via the architect table, assuming such entries exist."
+        },
+        {
+          "phrase": "List mills designed by female architects in 1850",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The intent is to filter and list mills based on the conditions provided (designed by female architects and built in 1850).",
+          "plausible_alternative": "The intent could be interpreted as listing all mills built in 1850 regardless of the architect's gender, or listing all mills designed by female architects regardless of the year.",
+          "evidence_from_sql": "The SQL query uses both conditions in the WHERE clause, indicating an assumption that both conditions are necessary for the intent."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Scope"
+        },
+        {
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Temporal"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 31,
+      "question": "Find the length of the Fairy Bridge",
+      "sql": "SELECT length_meters FROM bridge WHERE name = 'Xian Ren Qiao (Fairy Bridge)';",
+      "ambiguities": [
+        {
+          "phrase": "Find the length of the Fairy Bridge",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Attachment",
+          "assumption_made": "The question implies that 'Fairy Bridge' is the full name of the bridge. It assumes there is no ambiguity in the name 'Fairy Bridge' corresponding to 'Xian Ren Qiao (Fairy Bridge)' in the database.",
+          "plausible_alternative": "The name 'Fairy Bridge' could refer to a different or partial name in the database, leading to an alternative interpretation or SQL query.",
+          "evidence_from_sql": "The generated SQL uses WHERE name = 'Xian Ren Qiao (Fairy Bridge)' assuming 'Fairy Bridge' directly matches the full name stored in the database."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Attachment"
+        },
+        {
+          "type": "Schema Ambiguity",
+          "subtype": "Column"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 32,
+      "question": "Count the number of structures per architect",
+      "sql": "SELECT a.id, a.name, COUNT(b.id) AS bridge_count, COUNT(m.id) AS mill_count\nFROM architect a\nLEFT JOIN bridge b ON a.id = b.architect_id\nLEFT JOIN mill m ON a.id = m.architect_id\nGROUP BY a.id, a.name;",
+      "ambiguities": [
+        {
+          "phrase": "Count the number of structures per architect",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Scope",
+          "assumption_made": "The phrase 'structures' is assumed to refer to both bridges and mills.",
+          "plausible_alternative": "The question could be interpreted to mean only counting one type of structure (either bridges or mills).",
+          "evidence_from_sql": "The SQL query uses COUNT(b.id) for bridges and COUNT(m.id) for mills, indicating that both are considered structures."
+        },
+        {
+          "phrase": "Count the number of structures per architect",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The intent is assumed to be counting the total number of each type of structure per architect.",
+          "plausible_alternative": "The intent could be to filter or sort the results based on the count, which is not specified.",
+          "evidence_from_sql": "The SQL query groups by architect and counts bridges and mills, but does not include any filtering or sorting based on these counts."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Schema Ambiguity",
+          "subtype": "Table"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 33,
+      "question": "Show bridges with a length over 200",
+      "sql": "SELECT b.id, b.name, b.location, b.length_meters, b.length_feet\nFROM bridge b\nWHERE b.length_meters > 200 OR b.length_feet > 200;",
+      "ambiguities": [
+        {
+          "phrase": "Show bridges with a length over 200",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The query assumes 'over 200' applies to both length_meters and length_feet, using OR to combine conditions.",
+          "plausible_alternative": "The intent could be interpreted as requiring both conditions to be true (AND) or to specify a single unit of measurement.",
+          "evidence_from_sql": "The SQL uses 'b.length_meters > 200 OR b.length_feet > 200', indicating an assumption that either condition suffices."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent"
+        },
+        {
+          "type": "Schema Ambiguity",
+          "subtype": "Column"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 34,
+      "question": "List the names of all bridges whose location text contains the substring 'China'.",
+      "sql": "SELECT name\nFROM bridge\nWHERE location LIKE '%China%';",
+      "ambiguities": [
+        {
+          "phrase": "location text contains the substring 'China'",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Value",
+          "assumption_made": "The location text should be matched exactly using the substring 'China'.",
+          "plausible_alternative": "The location text might require a more flexible match, such as using a case-insensitive search or matching different forms of the word 'China'.",
+          "evidence_from_sql": "The generated SQL uses the LIKE operator with '%China%', which assumes an exact substring match within the text."
+        }
+      ],
+      "expected_ambiguities": [],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 35,
+      "question": "Display the name of each architect who has nationality2 equal to 'American'.",
+      "sql": "SELECT a.name\nFROM architect a\nWHERE a.nationality2 = 'American';",
+      "ambiguities": [
+        {
+          "phrase": "Display the name of each architect who has nationality2 equal to 'American'.",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Scope",
+          "assumption_made": "The query assumes that 'nationality2' is the only relevant field for filtering architects with American nationality. It does not consider 'nationality1'.",
+          "plausible_alternative": "The query could also filter architects based on 'nationality1' being 'American' or consider both 'nationality1' and 'nationality2'.",
+          "evidence_from_sql": "The SQL uses `a.nationality2 = 'American'`, ignoring 'nationality1'."
+        }
+      ],
+      "expected_ambiguities": [],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 36,
+      "question": "Find the maximum length_meters value among all records in the bridge table.",
+      "sql": "SELECT MAX(\"length_meters\") AS max_length_meters\nFROM \"bridge\";",
+      "ambiguities": [
+        {
+          "phrase": "Find the maximum length_meters value among all records in the bridge table.",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The query intends to find the single maximum value of length_meters in the bridge table.",
+          "plausible_alternative": "The query could intend to list all bridges sorted by length_meters in descending order.",
+          "evidence_from_sql": "The SQL uses SELECT MAX('length_meters') which implies looking for a single maximum value rather than sorting or listing all values."
+        }
+      ],
+      "expected_ambiguities": [],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 37,
+      "question": "Find architects with British roots",
+      "sql": "SELECT a.id, a.name, a.nationality1, a.nationality2\nFROM architect a\nWHERE a.nationality1 = 'British' OR a.nationality2 = 'British';",
+      "ambiguities": [
+        {
+          "phrase": "British roots",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Attachment",
+          "assumption_made": "The query assumes that 'British roots' refers specifically to the 'nationality2' column, which stores secondary nationalities.",
+          "plausible_alternative": "'British roots' might imply any connection to British nationality, including 'nationality1' or a broader interpretation of British heritage.",
+          "evidence_from_sql": "The SQL query checks both 'nationality1' and 'nationality2' for 'British', indicating an assumption that 'British roots' can be represented in either column."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Schema Ambiguity",
+          "subtype": "Column"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 38,
+      "question": "Find the minimum built_year value among all records in the mill table.",
+      "sql": "SELECT MIN(\"built_year\") AS min_built_year FROM \"mill\";",
+      "ambiguities": [
+        {
+          "phrase": "Find the minimum built_year value among all records in the mill table.",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The question intends to find the minimum built_year for the entire mill table without any additional filters or conditions.",
+          "plausible_alternative": "The question might have intended to find the minimum built_year for a subset of mills, such as those of a particular architect or type.",
+          "evidence_from_sql": "The SQL query directly uses 'SELECT MIN(\"built_year\") AS min_built_year FROM \"mill\";' which implies there are no additional filters or conditions."
+        }
+      ],
+      "expected_ambiguities": [],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 39,
+      "question": "List the names and length_feet of all bridges sorted by length_feet in ascending order.",
+      "sql": "SELECT b.name, b.length_feet\nFROM bridge b\nORDER BY b.length_feet ASC;",
+      "ambiguities": [
+        {
+          "phrase": "List the names and length_feet of all bridges",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Scope",
+          "assumption_made": "The question implies 'all bridges' refers to every bridge entry in the 'bridge' table without any filtering criteria.",
+          "plausible_alternative": "The user might have intended to list only bridges that meet certain criteria, such as those of a specific architect or length.",
+          "evidence_from_sql": "The SQL query 'SELECT b.name, b.length_feet FROM bridge b' selects all records from the 'bridge' table without any WHERE clause, implying all bridges are considered."
+        },
+        {
+          "phrase": "sorted by length_feet in ascending order",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The question implies that the sorting should be based on the 'length_feet' column in ascending order.",
+          "plausible_alternative": "The user might have intended to sort by another metric, such as the bridge's 'name' or 'location'.",
+          "evidence_from_sql": "The SQL query includes 'ORDER BY b.length_feet ASC', which indicates that the results are sorted by the 'length_feet' column in ascending order."
+        }
+      ],
+      "expected_ambiguities": [],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 40,
+      "question": "Find the best architects",
+      "sql": "SELECT\n    a.name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    COUNT(b.id) AS bridge_count,\n    COUNT(m.id) AS mill_count,\n    SUM(b.length_meters) AS total_bridge_length_meters,\n    SUM(m.id) * 100.0 AS estimated_architectural_impact_score\nFROM\n    architect a\nLEFT JOIN\n    bridge b ON a.id = b.architect_id\nLEFT JOIN\n    mill m ON a.id = m.architect_id\nGROUP BY\n    a.id, a.name, a.nationality1, a.nationality2, a.gender\nORDER BY\n    total_bridge_length_meters DESC, mill_count DESC, bridge_count DESC;",
+      "ambiguities": [
+        {
+          "phrase": "Find the best architects",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The query intends to rank architects based on the number of bridges and mills they designed, and the total length of bridges they designed.",
+          "plausible_alternative": "The query could intend to find architects based on other criteria such as their nationality, gender, or the age of the structures they designed.",
+          "evidence_from_sql": "The SQL query orders architects by total_bridge_length_meters DESC, mill_count DESC, and bridge_count DESC, indicating an intent to rank architects by these metrics."
+        },
+        {
+          "phrase": "Find the best architects",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The query assumes that the 'best' architects can be quantified by the number of structures and total length of bridges they have designed.",
+          "plausible_alternative": "The query could also consider other metrics such as the average built year of mills, the earliest or latest built year, or even subjective measures like awards or recognitions.",
+          "evidence_from_sql": "The SQL query uses COUNT and SUM functions to aggregate data on bridges and mills, which implies an intent to quantify 'best' architects using these metrics."
+        },
+        {
+          "phrase": "Find the best architects",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The query assumes that the 'best' architects are those with the highest number of bridges, mills, and total bridge length.",
+          "plausible_alternative": "The query could be interpreted to find architects with the most significant impact in a specific region or country, or those who designed the most iconic structures.",
+          "evidence_from_sql": "The SQL query uses ORDER BY clauses on total_bridge_length_meters, mill_count, and bridge_count, indicating an intent to rank architects based on these aggregated values."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 41,
+      "question": "Show bridges built in the 19th century",
+      "sql": "SELECT b.id, b.name, b.location, b.length_meters, b.length_feet\nFROM bridge b\nWHERE b.id IN (\n    SELECT id FROM bridge\n    WHERE\n        (length_meters BETWEEN 1800 AND 1999 OR length_feet BETWEEN 5900 AND 6560)\n        AND\n        (\n            (location LIKE '%19th%') OR\n            (location LIKE '%century%')\n        )\n);\n\n\n**Corrected Query (based on actual data):**\n\nSELECT b.id, b.name, b.location, b.length_meters, b.length_feet\nFROM bridge b\nWHERE b.id IN (\n    SELECT id FROM bridge\n    WHERE\n        (\n            (b.length_meters BETWEEN 1800 AND 1999 OR b.length_feet BETWEEN 5900 AND 6560)\n            AND\n            (\n                (b.location LIKE '%1800%' OR b.location LIKE '%1900%')\n                OR\n                (b.location LIKE '%century%' AND (b.location LIKE '%19%' OR b.location LIKE '%18%'))\n            )\n        )\n        AND b.id IN (1, 2, 3, 4, 5)\n);\n\n\n**Final Query (simplified and accurate):**\n\nSELECT b.id, b.name, b.location, b.length_meters, b.length_feet\nFROM bridge b\nWHERE b.id IN (\n    SELECT id FROM bridge\n    WHERE\n        (\n            (b.location LIKE '%China%' AND b.length_meters BETWEEN 64.2 AND 121)\n            OR\n            (b.location LIKE '%USA%' AND b.length_meters BETWEEN 62 AND 88)\n        )\n        AND b.id IN (1, 2, 3, 4, 5)\n);\n\n\n**Final accurate query based on data:**\n\n\nSELECT b.id, b.name, b.location, b.length_meters, b.length_feet\nFROM bridge b\nWHERE b.id IN (\n    SELECT id FROM bridge\n    WHERE\n        (\n            b.length_meters BETWEEN 64.2 AND 121\n            AND (\n                b.location LIKE '%China%' OR\n                b.location LIKE '%USA%'\n            )\n        )\n        AND b.id IN (1, 2, 3, 4, 5)\n);\n\n\n**Corrected version based on actual data:**\n\n\nSELECT b.id, b.name, b.location, b.length_meters, b.length_feet\nFROM bridge b\nWHERE b.id IN (\n    SELECT id FROM bridge\n    WHERE\n        (\n            b.length_meters BETWEEN 64.2 AND 121\n            AND (\n                b.location LIKE '%China%' OR\n                b.location LIKE '%USA%'\n            )\n        )\n        AND b.length_meters BETWEEN 64.2 AND 121\n);\n\n\n**Final accurate query:**\n\n\nSELECT b.id, b.name, b.location, b.length_meters, b.length_feet\nFROM bridge b\nWHERE b.id IN (\n    SELECT id FROM bridge\n    WHERE\n        (\n            b.length_meters BETWEEN 64.2 AND 121\n        )\n        AND (\n            b.location LIKE '%China%' OR\n            b.location LIKE '%USA%'\n        )\n        AND b.length_meters BETWEEN 64.2 AND 121\n);\n\n\n**Final accurate query:**\n\n\nSELECT b.id, b.name, b.location, b.length_meters, b.length_feet\nFROM bridge b\nWHERE b.id IN (\n    SELECT id FROM bridge\n    WHERE b.length_meters BETWEEN 64.2 AND 121\n    AND b.location LIKE '%China%' OR b.location LIKE '%USA%'\n);\n\n\n**Corrected and accurate query:**\n\n\nSELECT b.id, b.name, b.location, b.length_meters, b.length_feet\nFROM bridge b\nWHERE b.id IN (\n    SELECT id FROM bridge\n    WHERE b.length_meters BETWEEN 64.2 AND 121\n    AND (\n        b.location LIKE '%China%' OR\n        b.location LIKE '%USA%'\n    )\n    AND b.length_meters BETWEEN 64.2 AND 121\n);\n\n\n**Simplified and accurate query:**\n\n\nSELECT b.id, b.name, b.location, b.length_meters, b.length_feet\nFROM bridge b\nWHERE b.length_meters BETWEEN 64.2 AND 121\nAND (\n    b.location LIKE '%China%' OR\n    b.location LIKE '%USA%'\n);\n\n\n**Final accurate query for 19th-century bridges:**\n\n\nSELECT b.id, b.name, b.location, b.length_meters, b.length_feet\nFROM bridge b\nWHERE b.id IN (\n    SELECT id FROM bridge\n    WHERE b.length_meters BETWEEN 64.2 AND 121\n    AND (\n        (b.location LIKE '%China%' AND b.length_meters BETWEEN 64.2 AND 121)\n        OR (b.location LIKE '%USA%' AND b.length_meters BETWEEN 62 AND 88)\n    )\n    AND b.id IN (1, 2, 3, 4, 5)\n);\n\n\n**Corrected and accurate query:**\n\n\nSELECT b.id, b.name, b.location, b.length_meters, b.length_feet\nFROM bridge b\nWHERE b.id IN (\n    SELECT id FROM bridge\n    WHERE b.length_meters BETWEEN 64.2 AND 121\n    AND (\n        (b.location LIKE '%China%' OR b.location LIKE '%USA%')\n        AND (b.length_meters BETWEEN 64.2 AND 121)\n    )\n    AND b.id IN (1, 2, 3, 4, 5)\n);\n\n\n**Actual working query:**\n\n\nSELECT b.id, b.name, b.location, b.length_meters, b.length_feet\nFROM bridge b\nWHERE b.length_meters BETWEEN 64.2 AND 121\nAND (\n    b.location LIKE '%China%' OR\n    b.location LIKE '%USA%'\n);\n\n\n**Correction based on data:**\n\nSince no bridge data explicitly mentions the 19th century, here's the query to find bridges with architect IDs that have mills built in the 19th century:\n\n\nSELECT b.id, b.name, b.location, b.length_meters, b.length_feet\nFROM bridge b\nJOIN architect_mill_stats a ON b.architect_id = a.architect_id\nWHERE a.earliest_built_year BETWEEN 1800 AND 1899;\n\n\n**Final accurate query:**\n\n\nSELECT b.id, b.name, b.location, b.length_meters, b.length_feet\nFROM bridge b\nWHERE b.architect_id IN (\n    SELECT architect_id FROM architect_mill_stats\n    WHERE earliest_built_year BETWEEN 1800 AND 1899\n);",
+      "ambiguities": [
+        {
+          "phrase": "Show bridges built in the 19th century",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Temporal",
+          "assumption_made": "The question assumes that the term 'built in the 19th century' refers to a specific range of years, namely 1800 to 1899.",
+          "plausible_alternative": "It could also imply any bridge associated with an architect who has a mill built in the 19th century.",
+          "evidence_from_sql": "The final accurate query uses 'WHERE a.earliest_built_year BETWEEN 1800 AND 1899' to filter bridges based on architects linked to mills built in that century."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Temporal"
+        }
+      ],
+      "validation": {
+        "valid": false,
+        "error": "Error tokenizing 'WHERE earliest_built_year BETWEEN 1800 AND 1899\n)'"
+      }
+    },
+    {
+      "id": 42,
+      "question": "List all structures designed by Frank Gehry",
+      "sql": "SELECT b.id, b.name, b.location, b.length_meters, b.length_feet\nFROM bridge b\nWHERE b.architect_id = 2;",
+      "ambiguities": [
+        {
+          "phrase": "List all structures designed by Frank Gehry",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Attachment",
+          "assumption_made": "The query is interpreted as listing only bridges designed by Frank Gehry, ignoring other possible structures like mills.",
+          "plausible_alternative": "The query could be intended to list all types of structures (bridges and mills) designed by Frank Gehry.",
+          "evidence_from_sql": "The generated SQL query only selects from the 'bridge' table and does not consider the 'mill' table, even though Frank Gehry has a record in the 'mill' table."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Schema Ambiguity",
+          "subtype": "Table"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 43,
+      "question": "Find mills with high build years",
+      "sql": "SELECT m.id, m.name, m.location, m.type, m.built_year\nFROM mill m\nWHERE m.built_year > (\n    SELECT avg_built_year\n    FROM architect_mill_stats\n    WHERE architect_id = (\n        SELECT id\n        FROM architect\n        WHERE name IN ('Frank Lloyd Wright', 'Mies Van Der Rohe')\n    )\n);",
+      "ambiguities": [
+        {
+          "phrase": "Find mills with high build years",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The question implies that 'high build years' refers to mills built after the average built year of certain architects' mills.",
+          "plausible_alternative": "The question could imply selecting mills built in the most recent years, or mills with built years above a certain threshold.",
+          "evidence_from_sql": "The SQL query filters mills where m.built_year is greater than the average built year of specific architects, implying 'high' is relative to an average rather than an absolute threshold or recentness."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 44,
+      "question": "Show bridges located in National Parks",
+      "sql": "SELECT b.id, b.name, b.location, b.length_meters, b.length_feet\nFROM bridge b\nWHERE b.location LIKE '%National Park%'\n   OR b.location LIKE '%National% Park%'\n   OR b.location LIKE '%National% Park%';",
+      "ambiguities": [
+        {
+          "phrase": "Show bridges located in National Parks",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Value",
+          "assumption_made": "The phrase 'located in National Parks' is assumed to be satisfied by any location string containing 'National Park', 'National% Park', or 'National% Park%'.",
+          "plausible_alternative": "The question might intend to show bridges only in locations explicitly named as 'National Park' without any additional context or wording.",
+          "evidence_from_sql": "The SQL query uses LIKE conditions with wildcards ('%') to match any location containing 'National Park', 'National% Park', or 'National% Park%'. This broadens the scope to include any location with these substrings, which might not strictly be 'National Parks'."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Data Ambiguity",
+          "subtype": "Value"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 45,
+      "question": "List architects who designed bridges and mills in the same place",
+      "sql": "SELECT DISTINCT a.name\nFROM architect a\nJOIN bridge b ON a.id = b.architect_id\nJOIN mill m ON a.id = m.architect_id\nWHERE b.location LIKE '%USA%'\n   OR b.location LIKE '%China%'\n   OR b.location LIKE '%United States%'\n   OR m.location LIKE '%USA%'\n   OR m.location LIKE '%China%'\n   OR m.location LIKE '%United States%';\n\n\nCorrected query based on the requirement to find architects who designed bridges and mills in the same location:\n\n\nSELECT DISTINCT a.name\nFROM architect a\nJOIN bridge b ON a.id = b.architect_id\nJOIN mill m ON a.id = m.architect_id\nWHERE b.location = m.location;",
+      "ambiguities": [
+        {
+          "phrase": "designed bridges and mills in the same place",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The question intends to find architects who have designed both bridges and mills located in the exact same location.",
+          "plausible_alternative": "The question might be interpreted as architects who have designed bridges and mills in overlapping or similar locations, not necessarily the same.",
+          "evidence_from_sql": "The generated SQL uses 'LIKE' for location matching, which indicates a broader interpretation of 'same place' as potentially similar or overlapping locations, rather than the exact same location."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent"
+        }
+      ],
+      "validation": {
+        "valid": false,
+        "error": "Invalid expression / Unexpected token. Line 13, Col: 21.\n   '%USA%'\n   OR m.location LIKE '%China%'\n   OR m.location LIKE '%United States%';\n\n\nCorrected query \u001b[4mbased\u001b[0m on the requirement to find architects who designed bridges and mills in the same location:\n\n\nSELECT"
+      }
+    },
+    {
+      "id": 46,
+      "question": "Find the average year architects built structures",
+      "sql": "SELECT\n    a.name AS architect_name,\n    AVG(CASE\n        WHEN m.built_year IS NOT NULL THEN m.built_year\n        ELSE NULL\n    END) AS avg_built_year,\n    AVG(CASE\n        WHEN b.length_meters IS NOT NULL THEN b.length_meters\n        ELSE NULL\n    END) AS avg_bridge_length_meters,\n    AVG(CASE\n        WHEN b.length_feet IS NOT NULL THEN b.length_feet\n        ELSE NULL\n    END) AS avg_bridge_length_feet\nFROM architect a\nLEFT JOIN bridge b ON a.id = b.architect_id\nLEFT JOIN mill m ON a.id = m.architect_id\nGROUP BY a.id, a.name;",
+      "ambiguities": [
+        {
+          "phrase": "Find the average year architects built structures",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The query intends to compute the average built year of all types of structures (both bridges and mills) associated with architects.",
+          "plausible_alternative": "The query might intend to find the average built year only for mills, or only for bridges, or to distinguish between the two averages.",
+          "evidence_from_sql": "The SQL uses LEFT JOIN to combine both 'bridge' and 'mill' tables with 'architect' to compute averages for both built years and bridge lengths."
+        },
+        {
+          "phrase": "Find the average year architects built structures",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Temporal",
+          "assumption_made": "The phrase 'average year architects built structures' assumes 'built year' is a valid attribute for both bridges and mills.",
+          "plausible_alternative": "The query could be interpreted as only applying to 'mill' which has a 'built_year' attribute, or alternatively, only apply to bridges if there was a relevant 'built_year' for bridges.",
+          "evidence_from_sql": "The SQL computes average built years using the 'built_year' from 'mill' and 'length_meters' and 'length_feet' from 'bridge', indicating an assumption that these attributes are relevant for averaging."
+        },
+        {
+          "phrase": "Find the average year architects built structures",
+          "type": "Schema Ambiguity",
+          "subtype": "Aggregate",
+          "assumption_made": "The query assumes that calculating the average built year requires directly using the 'built_year' from 'mill' and possibly inferring years from other attributes in 'bridge'.",
+          "plausible_alternative": "The query could rely on precomputed average values in 'architect_mill_stats' for mills, or it could be interpreted to only require 'bridge' attributes without any direct 'built_year'.",
+          "evidence_from_sql": "The SQL directly calculates the average built year from the 'built_year' in 'mill', while calculating lengths from 'bridge', instead of using precomputed averages in 'architect_mill_stats'."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Schema Ambiguity",
+          "subtype": "Aggregate"
+        },
+        {
+          "type": "Schema Ambiguity",
+          "subtype": "Table"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 47,
+      "question": "Show bridges shorter than average",
+      "sql": "SELECT b.id, b.name, b.location, b.length_meters, b.length_feet\nFROM bridge b\nJOIN architect_mill_stats ams ON b.architect_id = ams.architect_id\nWHERE b.length_meters < (SELECT avg_built_year FROM architect_mill_stats);",
+      "ambiguities": [
+        {
+          "phrase": "Show bridges shorter than average",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The query assumes 'average' refers to 'avg_built_year' from the 'architect_mill_stats' table rather than an average length of bridges.",
+          "plausible_alternative": "The 'average' might have been intended to refer to the average length of bridges, either in meters or feet.",
+          "evidence_from_sql": "The SQL query uses 'avg_built_year' from 'architect_mill_stats' as the average value to compare bridge lengths, which is semantically unrelated to bridge length."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 48,
+      "question": "List female architects who built bridges in China",
+      "sql": "SELECT a.name\nFROM architect a\nJOIN bridge b ON a.id = b.architect_id\nWHERE a.gender = 'female' AND b.location LIKE '%China%';",
+      "ambiguities": [
+        {
+          "phrase": "built bridges",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The question assumes that the architect is directly involved in the design or construction of the bridge, meaning the architect_id in the bridge table directly corresponds to the architect who 'built' the bridge.",
+          "plausible_alternative": "The phrase could also be interpreted to mean that the architect was merely associated with the bridge in some capacity, such as through consultation or influence, without being the primary designer or constructor.",
+          "evidence_from_sql": "The SQL query directly joins the architect table with the bridge table on the architect_id, implying a direct role in the construction or design of the bridge."
+        },
+        {
+          "phrase": "in China",
+          "type": "Data Ambiguity",
+          "subtype": "Value",
+          "assumption_made": "The query assumes that 'China' as a substring in the location column of the bridge table unambiguously identifies bridges located in China.",
+          "plausible_alternative": "The location field could include entries like 'Guizhou, China' or 'Guangxi, China', where 'China' is part of a larger string, leading to potential matches in other countries' contexts if the database schema includes multi-country locations without clear delimiters.",
+          "evidence_from_sql": "The SQL query uses b.location LIKE '%China%' to filter bridges, assuming that any occurrence of 'China' in the location string correctly identifies the bridge's location as being in China."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Attachment"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 49,
+      "question": "List the names and built_year of all mills sorted by built_year in descending order.",
+      "sql": "SELECT\n    m.name,\n    m.built_year\nFROM\n    mill m\nORDER BY\n    m.built_year DESC;",
+      "ambiguities": [
+        {
+          "phrase": "List the names and built_year of all mills sorted by built_year in descending order.",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The intent is to list all mills with their names and built_year, sorted by built_year in descending order.",
+          "plausible_alternative": "The question might have intended to specify only mills built after a certain year or only the top N mills.",
+          "evidence_from_sql": "The SQL query SELECT m.name, m.built_year FROM mill m ORDER BY m.built_year DESC; assumes all mills should be listed and sorted without any filtering or limiting."
+        }
+      ],
+      "expected_ambiguities": [],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 50,
+      "question": "Find the primary nationality of all architects",
+      "sql": "SELECT\n    architect.name,\n    CASE\n        WHEN architect.nationality1 IS NOT NULL THEN architect.nationality1\n        ELSE architect.nationality2\n    END AS primary_nationality\nFROM architect\nWHERE nationality1 IS NOT NULL OR nationality2 IS NOT NULL;",
+      "ambiguities": [
+        {
+          "phrase": "Find the primary nationality of all architects",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Attachment",
+          "assumption_made": "The term 'primary nationality' is assumed to refer to 'nationality1' if it is not null, and to 'nationality2' if 'nationality1' is null.",
+          "plausible_alternative": "The term 'primary nationality' could also be interpreted as a more complex rule, such as selecting the nationality with a specific priority or based on additional context.",
+          "evidence_from_sql": "The CASE statement in the SQL query assigns 'nationality1' as the primary nationality if it is not null; otherwise, it assigns 'nationality2'."
+        },
+        {
+          "phrase": "Find the primary nationality of all architects",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Scope",
+          "assumption_made": "The question 'Find the primary nationality of all architects' is assumed to include only architects with at least one non-null nationality (either 'nationality1' or 'nationality2').",
+          "plausible_alternative": "The question could be interpreted to include all architects, even if both 'nationality1' and 'nationality2' are null, possibly returning a null or default value for primary nationality.",
+          "evidence_from_sql": "The WHERE clause in the SQL query filters architects to include only those with at least one non-null nationality (nationality1 IS NOT NULL OR nationality2 IS NOT NULL)."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Schema Ambiguity",
+          "subtype": "Column"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 51,
+      "question": "List all bridges and mills.",
+      "sql": "SELECT\n    b.id AS bridge_id,\n    b.name AS bridge_name,\n    b.location AS bridge_location,\n    b.length_meters AS bridge_length_meters,\n    b.length_feet AS bridge_length_feet\nFROM\n    bridge b;\n\nUNION ALL\n\nSELECT\n    m.id AS mill_id,\n    m.name AS mill_name,\n    m.location AS mill_location,\n    m.type AS mill_type,\n    m.built_year AS mill_built_year\nFROM\n    mill m;",
+      "ambiguities": [
+        {
+          "phrase": "List all bridges and mills.",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The query assumes a UNION operation to combine results from both the 'bridge' and 'mill' tables.",
+          "plausible_alternative": "The query could have been interpreted to only list bridges or only list mills.",
+          "evidence_from_sql": "The SQL query uses UNION ALL to combine SELECT statements from both the 'bridge' and 'mill' tables."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Scope"
+        },
+        {
+          "type": "Schema Ambiguity",
+          "subtype": "Column"
+        },
+        {
+          "type": "Schema Ambiguity",
+          "subtype": "Join"
+        }
+      ],
+      "validation": {
+        "valid": false,
+        "error": "Invalid expression / Unexpected token. Line 10, Col: 5.\n  .length_meters AS bridge_length_meters,\n    b.length_feet AS bridge_length_feet\nFROM\n    bridge b;\n\n\u001b[4mUNION\u001b[0m ALL\n\nSELECT\n    m.id AS mill_id,\n    m.name AS mill_name,\n    m.location AS mill_location,\n    m.ty"
+      }
+    },
+    {
+      "id": 52,
+      "question": "List all structures in Afghanistan",
+      "sql": "SELECT b.id, b.name, b.location, b.length_meters, b.length_feet\nFROM bridge b\nWHERE b.location LIKE '%Afghanistan%';",
+      "ambiguities": [
+        {
+          "phrase": "List all structures in Afghanistan",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Attachment",
+          "assumption_made": "The question refers to 'structures' meaning only those listed in the 'bridge' table.",
+          "plausible_alternative": "The question could refer to structures in both the 'bridge' and 'mill' tables.",
+          "evidence_from_sql": "The SQL query only selects from the 'bridge' table, ignoring 'mill'."
+        },
+        {
+          "phrase": "List all structures in Afghanistan",
+          "type": "Schema Ambiguity",
+          "subtype": "Table",
+          "assumption_made": "The only relevant table for 'structures' is the 'bridge' table.",
+          "plausible_alternative": "The 'mill' table could also contain relevant structures.",
+          "evidence_from_sql": "The SQL query does not include the 'mill' table, suggesting it is not considered relevant."
+        },
+        {
+          "phrase": "List all structures in Afghanistan",
+          "type": "Data Ambiguity",
+          "subtype": "Value",
+          "assumption_made": "The location field contains 'Afghanistan' as a substring.",
+          "plausible_alternative": "The location field might contain variations like 'Kabul, Afghanistan' or 'Bamiyan, Afghanistan'.",
+          "evidence_from_sql": "The SQL uses 'LIKE '%Afghanistan%'' to match locations, assuming 'Afghanistan' is a substring."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Schema Ambiguity",
+          "subtype": "Table"
+        },
+        {
+          "type": "Data Ambiguity",
+          "subtype": "Value"
+        },
+        {
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Scope"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 53,
+      "question": "Find the most prolific architect",
+      "sql": "SELECT architect.name, architect_mill_stats.mill_count\nFROM architect\nJOIN architect_mill_stats ON architect.id = architect_mill_stats.architect_id\nWHERE architect_mill_stats.mill_count = (\n    SELECT MAX(mill_count)\n    FROM architect_mill_stats\n);",
+      "ambiguities": [
+        {
+          "phrase": "Find the most prolific architect",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The question intends to find the architect with the maximum number of mills.",
+          "plausible_alternative": "The question could mean finding the architect with the maximum number of bridges, or other structures.",
+          "evidence_from_sql": "The SQL query selects from architect_mill_stats where mill_count is maximum, indicating the intention to find the architect with the most mills."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 54,
+      "question": "Show mills older than 150 years",
+      "sql": "SELECT m.id, m.name, m.location, m.type, m.built_year\nFROM mill m\nWHERE m.built_year - YEAR(CURRENT_DATE) > 150;",
+      "ambiguities": [
+        {
+          "phrase": "Show mills older than 150 years",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Temporal",
+          "assumption_made": "The current year is used as the reference point to calculate the age of the mills.",
+          "plausible_alternative": "The question could refer to mills older than 150 years from a specific past year, such as 1900.",
+          "evidence_from_sql": "The SQL uses 'YEAR(CURRENT_DATE)' to determine the current year, assuming that 'older than 150 years' means the current year minus the built year is greater than 150."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Temporal"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 55,
+      "question": "List bridges longer than 80 meters or 250 feet",
+      "sql": "SELECT b.id, b.name, b.location, b.length_meters, b.length_feet\nFROM bridge b\nWHERE b.length_meters > 80 OR b.length_feet > 250;",
+      "ambiguities": [
+        {
+          "phrase": "List bridges longer than 80 meters or 250 feet",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The query filters bridges based on either length in meters or feet, using an OR condition.",
+          "plausible_alternative": "The query could be interpreted as needing bridges that meet both conditions, using an AND condition.",
+          "evidence_from_sql": "The SQL uses 'b.length_meters > 80 OR b.length_feet > 250' to filter the data."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 56,
+      "question": "Show bridges designed by Frank Lloyd Wright in Utah",
+      "sql": "SELECT b.id, b.name, b.location, b.length_meters, b.length_feet\nFROM bridge b\nJOIN architect a ON b.architect_id = a.id\nWHERE a.name = 'Frank Lloyd Wright'\nAND b.location LIKE '%Utah%';",
+      "ambiguities": [
+        {
+          "phrase": "Show bridges designed by Frank Lloyd Wright in Utah",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Attachment",
+          "assumption_made": "The phrase 'designed by Frank Lloyd Wright in Utah' implies that the bridge must be designed by Frank Lloyd Wright and located in Utah. This assumption is made to filter the bridges based on both the designer and the location.",
+          "plausible_alternative": "The phrase could be interpreted as needing to show bridges designed by Frank Lloyd Wright and located anywhere, with an additional filter to include only those in Utah, or it could imply any bridge designed by Frank Lloyd Wright regardless of location.",
+          "evidence_from_sql": "The SQL query uses 'AND' to combine the conditions 'a.name = 'Frank Lloyd Wright'' and 'b.location LIKE '%Utah%'' indicating both conditions must be true for a bridge to be included in the results."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Attachment"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 57,
+      "question": "Find total structures designed by each architect",
+      "sql": "SELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    COUNT(DISTINCT b.id) AS bridge_count,\n    COUNT(DISTINCT m.id) AS mill_count,\n    (COUNT(DISTINCT b.id) + COUNT(DISTINCT m.id)) AS total_structures\nFROM\n    architect a\nLEFT JOIN\n    bridge b ON a.id = b.architect_id\nLEFT JOIN\n    mill m ON a.id = m.architect_id\nGROUP BY\n    a.id, a.name;",
+      "ambiguities": [
+        {
+          "phrase": "Find total structures designed by each architect",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Scope",
+          "assumption_made": "The question implies that each architect has designed structures that can be counted in the 'bridge' and 'mill' tables.",
+          "plausible_alternative": "The question might refer only to structures listed in a specific table or might mean structures of a specific type.",
+          "evidence_from_sql": "The SQL query counts distinct entries in both 'bridge' and 'mill' tables for each architect, assuming both are relevant to the question."
+        },
+        {
+          "phrase": "Find total structures designed by each architect",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The intent is to perform a summation of bridges and mills designed by each architect.",
+          "plausible_alternative": "The question could intend to filter or sort architects based on a different criterion, such as only those with a minimum number of designs.",
+          "evidence_from_sql": "The SQL query uses COUNT and GROUP BY to aggregate data without any filtering or sorting, assuming summation is the intent."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Schema Ambiguity",
+          "subtype": "Table"
+        },
+        {
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Scope"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 58,
+      "question": "Count the total number of records present in the bridge table.",
+      "sql": "SELECT COUNT(*) AS total_bridge_records FROM bridge;",
+      "ambiguities": [
+        {
+          "phrase": "Count the total number of records present in the bridge table.",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The query intends to count all records in the bridge table without any filtering or conditions.",
+          "plausible_alternative": "The question could have intended to count only specific types of bridges, such as those of a certain length or located in a specific area.",
+          "evidence_from_sql": "SELECT COUNT(*) AS total_bridge_records FROM bridge; implies counting all records without conditions."
+        }
+      ],
+      "expected_ambiguities": [],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 59,
+      "question": "Find bridges in US states",
+      "sql": "SELECT b.id, b.name, b.location, b.length_meters, b.length_feet\nFROM bridge b\nWHERE b.location LIKE '%USA%'\n   OR b.location LIKE '%United States%';",
+      "ambiguities": [
+        {
+          "phrase": "bridges in US states",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Value",
+          "assumption_made": "The phrase 'bridges in US states' is assumed to mean any location containing 'USA' or 'United States'.",
+          "plausible_alternative": "The phrase could be interpreted as requiring a more specific match, such as exact state names (e.g., 'California', 'Texas') or structured data that explicitly identifies US states.",
+          "evidence_from_sql": "The SQL uses LIKE '%USA%' and LIKE '%United States%' to filter locations, implying an assumption that any mention of 'USA' or 'United States' in the location field indicates a bridge in a US state."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Data Ambiguity",
+          "subtype": "Value"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 60,
+      "question": "List architects who are foreign",
+      "sql": "SELECT a.id, a.name, a.nationality1, a.nationality2\nFROM architect a\nWHERE a.nationality1 != '' OR a.nationality2 != '';",
+      "ambiguities": [
+        {
+          "phrase": "List architects who are foreign",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Scope",
+          "assumption_made": "The query assumes 'foreign' means architects with a non-empty 'nationality2' or non-default 'nationality1'.",
+          "plausible_alternative": "'Foreign' could mean architects with any non-empty 'nationality2', or possibly any 'nationality1' that isn't the default or 'American' (assuming 'American' is the default for the dataset).",
+          "evidence_from_sql": "The SQL uses 'a.nationality1 != '' OR a.nationality2 != ''', which captures any non-empty nationality fields, not just non-American ones."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 61,
+      "question": "Show bridges with length between 65 and 75",
+      "sql": "SELECT b.id, b.name, b.location, b.length_meters, b.length_feet\nFROM bridge b\nWHERE b.length_meters BETWEEN 65 AND 75;",
+      "ambiguities": [
+        {
+          "phrase": "Show bridges with length between 65 and 75",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The query assumes the length should be measured in meters rather than feet.",
+          "plausible_alternative": "The query could be interpreted to mean a length between 65 and 75 feet.",
+          "evidence_from_sql": "The SQL query filters by b.length_meters BETWEEN 65 AND 75; and does not account for length in feet."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent"
+        },
+        {
+          "type": "Schema Ambiguity",
+          "subtype": "Column"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 62,
+      "question": "List mills built before the industrial era",
+      "sql": "SELECT m.id, m.name, m.location, m.type, m.built_year\nFROM mill m\nWHERE m.built_year < 1800;",
+      "ambiguities": [
+        {
+          "phrase": "List mills built before the industrial era",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Temporal",
+          "assumption_made": "The Industrial Era is assumed to start before 1800.",
+          "plausible_alternative": "The Industrial Era could be considered to start at a different year, such as 1760.",
+          "evidence_from_sql": "The SQL WHERE clause 'm.built_year < 1800' assumes the Industrial Era begins before 1800."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Temporal"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 63,
+      "question": "Show the name and location of all bridges that have an architect_id of 5.",
+      "sql": "SELECT b.name, b.location\nFROM bridge b\nWHERE b.architect_id = 5;",
+      "ambiguities": [
+        {
+          "phrase": "Show the name and location of all bridges that have an architect_id of 5.",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The query intends to filter the bridges based on the architect_id without any additional operations such as sorting or aggregation.",
+          "plausible_alternative": "The query could have intended to include additional operations such as sorting the results or aggregating data related to the bridges.",
+          "evidence_from_sql": "The generated SQL uses a simple SELECT statement with a WHERE clause to filter bridges by architect_id, indicating no additional operations were assumed."
+        }
+      ],
+      "expected_ambiguities": [],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 64,
+      "question": "Find the maximum span of structures",
+      "sql": "SELECT MAX(MAX(COALESCE(bridge.length_meters, 0))) AS max_span_meters,\n       MAX(MAX(COALESCE(bridge.length_feet, 0))) AS max_span_feet\nFROM bridge;",
+      "ambiguities": [
+        {
+          "phrase": "Find the maximum span of structures",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The query is assumed to refer to both 'bridge.length_meters' and 'bridge.length_feet' as the span of structures, excluding other possible structures like 'mill'.",
+          "plausible_alternative": "The query could be interpreted to include other structures such as 'mill', or to consider only a specific unit of measurement.",
+          "evidence_from_sql": "SELECT MAX(MAX(COALESCE(bridge.length_meters, 0))) AS max_span_meters, MAX(MAX(COALESCE(bridge.length_feet, 0))) AS max_span_feet FROM bridge;"
+        },
+        {
+          "phrase": "Find the maximum span of structures",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Attachment",
+          "assumption_made": "The word 'structures' is assumed to attach to 'bridge' only, ignoring other tables like 'mill'.",
+          "plausible_alternative": "The phrase could also imply considering spans or measurements from other tables such as 'mill' if applicable.",
+          "evidence_from_sql": "SELECT MAX(MAX(COALESCE(bridge.length_meters, 0))) AS max_span_meters, MAX(MAX(COALESCE(bridge.length_feet, 0))) AS max_span_feet FROM bridge;"
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Schema Ambiguity",
+          "subtype": "Table"
+        },
+        {
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 65,
+      "question": "Show mills in Belgium",
+      "sql": "SELECT m.id, m.name, m.location, m.type, m.built_year, m.notes\nFROM mill m\nWHERE m.location LIKE '%Belgium%';",
+      "ambiguities": [
+        {
+          "phrase": "Show mills in Belgium",
+          "type": "Data Ambiguity",
+          "subtype": "Value",
+          "assumption_made": "The location column in the 'mill' table contains values that include the substring 'Belgium' for mills located in Belgium.",
+          "plausible_alternative": "The location values might include more specific or different naming conventions such as 'Brussels, Belgium' or 'Flanders, Belgium', which would not be captured by a simple LIKE '%Belgium%'.",
+          "evidence_from_sql": "The SQL query uses 'WHERE m.location LIKE '%Belgium%';', which assumes that any mill in Belgium will have 'Belgium' in its location string."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Data Ambiguity",
+          "subtype": "Value"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 66,
+      "question": "List architects who designed bridges or mills in China",
+      "sql": "SELECT DISTINCT a.id, a.name\nFROM architect a\nJOIN bridge b ON a.id = b.architect_id\nWHERE b.location LIKE '%China%'\n   OR EXISTS (\n       SELECT 1\n       FROM mill m\n       WHERE m.architect_id = a.id\n       AND m.location LIKE '%China%'\n   );",
+      "ambiguities": [
+        {
+          "phrase": "List architects who designed bridges or mills in China",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The query intends to filter architects based on their association with bridges or mills specifically located in China.",
+          "plausible_alternative": "The query could have intended to list architects associated with any project (bridges or mills) anywhere, not just China.",
+          "evidence_from_sql": "The SQL uses 'WHERE b.location LIKE '%China%' OR EXISTS (... AND m.location LIKE '%China%')' to filter only those architects associated with locations containing 'China'."
+        },
+        {
+          "phrase": "List architects who designed bridges or mills in China",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Attachment",
+          "assumption_made": "The phrase 'designed bridges or mills in China' implies that both 'bridges' and 'mills' are meant to be filtered by the location 'China'.",
+          "plausible_alternative": "It could be interpreted that 'designed bridges' and 'mills' are two separate entities, and only the bridges need to be located in China.",
+          "evidence_from_sql": "The SQL query uses 'JOIN bridge b ON a.id = b.architect_id WHERE b.location LIKE '%China%' OR EXISTS (...)' to ensure both bridges and mills are checked for the location 'China'."
+        },
+        {
+          "phrase": "List architects who designed bridges or mills in China",
+          "type": "Data Ambiguity",
+          "subtype": "Value",
+          "assumption_made": "The location 'China' is assumed to be specified correctly in the 'location' field of the 'bridge' and 'mill' tables.",
+          "plausible_alternative": "The location could be listed differently, such as 'People's Republic of China' or using different character sets or languages.",
+          "evidence_from_sql": "The SQL uses 'LIKE '%China%'' which assumes 'China' will appear in the location string as expected."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Scope"
+        },
+        {
+          "type": "Data Ambiguity",
+          "subtype": "Value"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 67,
+      "question": "Show architects whose nationality contains American",
+      "sql": "SELECT a.id, a.name, a.nationality1, a.nationality2\nFROM architect a\nWHERE a.nationality1 LIKE '%American%' OR a.nationality2 LIKE '%American%';",
+      "ambiguities": [
+        {
+          "phrase": "Show architects whose nationality contains American",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Attachment",
+          "assumption_made": "The question implies a check for the substring 'American' in either the 'nationality1' or 'nationality2' columns.",
+          "plausible_alternative": "The question could be asking to match the exact term 'American' in either column, rather than checking if it is contained within a larger string.",
+          "evidence_from_sql": "The SQL uses LIKE '%American%' which checks for the substring 'American' in both 'nationality1' and 'nationality2'."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Schema Ambiguity",
+          "subtype": "Column"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 68,
+      "question": "Find the latest mill built by Le Corbusier",
+      "sql": "SELECT \"built_year\" FROM \"mill\"\nWHERE \"architect_id\" = (SELECT \"id\" FROM \"architect\" WHERE \"name\" = 'Le Corbusier')\nORDER BY \"built_year\" DESC\nLIMIT 1;",
+      "ambiguities": [
+        {
+          "phrase": "Find the latest mill built by Le Corbusier",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Temporal",
+          "assumption_made": "The question refers to the mill with the most recent 'built_year' value in the database.",
+          "plausible_alternative": "The question could refer to the mill most recently inserted into the 'mill' table, regardless of 'built_year'.",
+          "evidence_from_sql": "The SQL query selects from 'mill' using 'built_year' and orders by it in descending order, indicating it assumes 'latest' refers to the most recent 'built_year'."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Temporal"
+        },
+        {
+          "type": "Schema Ambiguity",
+          "subtype": "Join"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 69,
+      "question": "Show prominent architects and their works",
+      "sql": "SELECT\n    a.name AS architect_name,\n    b.name AS bridge_name,\n    b.location AS bridge_location,\n    b.length_meters AS bridge_length_meters,\n    m.name AS mill_name,\n    m.location AS mill_location,\n    m.type AS mill_type,\n    m.built_year AS mill_built_year\nFROM\n    architect a\nJOIN\n    bridge b ON a.id = b.architect_id\nLEFT JOIN\n    mill m ON a.id = m.architect_id\nWHERE\n    b.length_meters > 70 OR m.built_year > 1850\nORDER BY\n    CASE\n        WHEN b.length_meters > 70 THEN 0\n        ELSE 1\n    END,\n    b.length_meters DESC NULLS LAST;",
+      "ambiguities": [
+        {
+          "phrase": "prominent architects",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The query assumes 'prominent' architects are those who have designed bridges longer than 70 meters or mills built after 1850.",
+          "plausible_alternative": "'Prominent' could also refer to architects with the most works, highest recognition, or other criteria not specified in the query.",
+          "evidence_from_sql": "The SQL uses a WHERE clause filtering for bridges longer than 70 meters or mills built after 1850 to determine prominence."
+        },
+        {
+          "phrase": "and their works",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Attachment",
+          "assumption_made": "The query assumes 'works' refers to both bridges and mills associated with the architects.",
+          "plausible_alternative": "'Works' could potentially refer to only one type of structure (either bridges or mills) or another form of architectural work not included in the schema.",
+          "evidence_from_sql": "The SQL joins the 'architect' table with both the 'bridge' and 'mill' tables to include all types of works."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent"
+        },
+        {
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Attachment"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 70,
+      "question": "Show mills designed by architects born in Germany",
+      "sql": "SELECT m.id, m.name, m.location, m.type, m.built_year\nFROM mill m\nJOIN architect_mill_stats ams ON m.architect_id = ams.architect_id\nJOIN architect a ON ams.architect_id = a.id\nWHERE a.nationality1 = 'German' OR a.nationality2 = 'German'\nAND m.built_year BETWEEN ams.earliest_built_year AND ams.latest_built_year;",
+      "ambiguities": [
+        {
+          "phrase": "Show mills designed by architects born in Germany",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Attachment",
+          "assumption_made": "The question implies filtering mills based on architects' nationality, specifically 'born in Germany'. It assumes 'born' refers to 'nationality1'.",
+          "plausible_alternative": "The question could imply considering both 'nationality1' and 'nationality2' for architects born in Germany, or it might refer to architects with any connection to Germany.",
+          "evidence_from_sql": "The SQL uses 'a.nationality1 = 'German' OR a.nationality2 = 'German'' to filter architects, suggesting that either nationality field is considered for 'born in Germany'."
+        },
+        {
+          "phrase": "Show mills designed by architects born in Germany",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The query assumes that 'designed by' implies a direct relationship between architects and mills, using a join condition between 'mill' and 'architect_mill_stats'.",
+          "plausible_alternative": "The question might imply directly joining 'mill' with 'architect' without using 'architect_mill_stats', or it could involve a different interpretation of 'designed by'.",
+          "evidence_from_sql": "The SQL joins 'mill' with 'architect_mill_stats' and then 'architect_mill_stats' with 'architect', assuming the 'architect_mill_stats' table is necessary for the relationship."
+        },
+        {
+          "phrase": "Show mills designed by architects born in Germany",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Temporal",
+          "assumption_made": "The query assumes that the 'built_year' of mills should be within the range specified in 'architect_mill_stats' (earliest_built_year to latest_built_year).",
+          "plausible_alternative": "The question might imply showing all mills regardless of their 'built_year', or it could specify a different range or condition for 'built_year'.",
+          "evidence_from_sql": "The SQL includes 'AND m.built_year BETWEEN ams.earliest_built_year AND ams.latest_built_year', indicating an assumption about the relevance of 'built_year' to the query."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Schema Ambiguity",
+          "subtype": "Column"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 71,
+      "question": "List names and locations of all historical sites",
+      "sql": "SELECT\n    b.name AS bridge_name,\n    b.location AS bridge_location\nFROM\n    bridge b\nUNION ALL\nSELECT\n    m.name AS mill_name,\n    m.location AS mill_location\nFROM\n    mill m;",
+      "ambiguities": [
+        {
+          "phrase": "List names and locations of all historical sites",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Scope",
+          "assumption_made": "The query assumes 'historical sites' refers only to bridges and mills in the database.",
+          "plausible_alternative": "Historical sites could include other types of structures or locations not covered by the 'bridge' and 'mill' tables.",
+          "evidence_from_sql": "The SQL query selects only from the 'bridge' and 'mill' tables, excluding other possible tables that could represent historical sites."
+        },
+        {
+          "phrase": "List names and locations of all historical sites",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Attachment",
+          "assumption_made": "The query assumes 'names and locations' should be separately listed for bridges and mills, without specifying a unified format.",
+          "plausible_alternative": "The query could have been intended to unify the names and locations under a single column regardless of the table.",
+          "evidence_from_sql": "The SQL query uses aliases to differentiate between bridge_name, bridge_location, mill_name, and mill_location, indicating separate handling."
+        },
+        {
+          "phrase": "List names and locations of all historical sites",
+          "type": "Schema Ambiguity",
+          "subtype": "Table",
+          "assumption_made": "The query assumes 'historical sites' are represented only by the 'bridge' and 'mill' tables.",
+          "plausible_alternative": "Other tables might represent historical sites, or there might be additional tables not listed in the schema.",
+          "evidence_from_sql": "The SQL query selects from only the 'bridge' and 'mill' tables, ignoring any other potential tables."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Schema Ambiguity",
+          "subtype": "Table"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 72,
+      "question": "Find bridges in the west",
+      "sql": "SELECT b.id, b.name, b.location, b.length_meters, b.length_feet\nFROM bridge b\nWHERE\n    b.location LIKE '%West%'\n    OR b.location LIKE '%West Coast%'\n    OR b.location LIKE '%USA%'\n    OR b.location LIKE '%United States%';",
+      "ambiguities": [
+        {
+          "phrase": "Find bridges in the west",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Value",
+          "assumption_made": "The phrase 'in the west' is interpreted to mean locations containing 'West', 'West Coast', 'USA', or 'United States'.",
+          "plausible_alternative": "The phrase 'in the west' could be interpreted more narrowly as only locations explicitly named 'West' or 'West Coast', or geographically as being in western countries or regions not explicitly listed.",
+          "evidence_from_sql": "The WHERE clause uses LIKE with '%West%', '%West Coast%', '%USA%', and '%United States%' to determine what constitutes 'in the west'."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Attachment"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 73,
+      "question": "Show the name, type, and notes of the mill whose name is 'Le Vieux Molen'.",
+      "sql": "SELECT \"name\", \"type\", \"notes\"\nFROM mill\nWHERE \"name\" = 'Le Vieux Molen';",
+      "ambiguities": [],
+      "expected_ambiguities": [],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 74,
+      "question": "List mills constructed during the Victorian era",
+      "sql": "SELECT m.id, m.name, m.location, m.type, m.built_year\nFROM mill m\nWHERE m.built_year BETWEEN 1837 AND 1900;",
+      "ambiguities": [
+        {
+          "phrase": "List mills constructed during the Victorian era",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Temporal",
+          "assumption_made": "The Victorian era is defined as the period from 1837 to 1900.",
+          "plausible_alternative": "The Victorian era could be defined differently, or the user might have intended a different period.",
+          "evidence_from_sql": "The SQL query uses `WHERE m.built_year BETWEEN 1837 AND 1900` to define the Victorian era."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Temporal"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 75,
+      "question": "Show architects with only one nationality",
+      "sql": "SELECT a.id, a.name, a.nationality1\nFROM architect a\nWHERE a.nationality2 IS NULL;",
+      "ambiguities": [
+        {
+          "phrase": "Show architects with only one nationality",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The query is interpreted as architects who have only one nationality listed, implying the second nationality field is empty.",
+          "plausible_alternative": "The query might have been intended to show architects who have a unique nationality not shared with others.",
+          "evidence_from_sql": "The SQL query specifically filters architects where `nationality2 IS NULL`, assuming that having a NULL value in the `nationality2` column implies the architect has only one nationality."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Schema Ambiguity",
+          "subtype": "Column"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 76,
+      "question": "Find the mill count for Frank Lloyd Wright",
+      "sql": "SELECT mill_count FROM architect_mill_stats WHERE architect_id = (SELECT id FROM architect WHERE name = 'Frank Lloyd Wright');",
+      "ambiguities": [
+        {
+          "phrase": "Find the mill count for Frank Lloyd Wright",
+          "type": "Schema Ambiguity",
+          "subtype": "Column",
+          "assumption_made": "The question refers to the mill count specifically stored in the architect_mill_stats table, rather than calculating it dynamically from the mill table.",
+          "plausible_alternative": "The SQL query could be constructed to count the number of mills associated with Frank Lloyd Wright directly from the mill table, using a COUNT function and JOIN, if the architect_mill_stats table did not exist or was not used.",
+          "evidence_from_sql": "The query uses architect_mill_stats.mill_count, implying a decision was made to use this precomputed value rather than calculating it from the mill table entries."
+        },
+        {
+          "phrase": "Find the mill count for Frank Lloyd Wright",
+          "type": "Schema Ambiguity",
+          "subtype": "Join",
+          "assumption_mill_count": "The query assumes that the architect_mill_stats table contains accurate and up-to-date mill count data for each architect, which can be directly queried without needing to join with the mill table to compute this value.",
+          "plausible_alternative": "An alternative approach could involve joining the architect and mill tables to count the mills associated with Frank Lloyd Wright, which would be necessary if the architect_mill_stats table did not exist or if real-time computation of mill count was preferred.",
+          "evidence_from_sql": "The absence of a JOIN operation between architect, mill, and architect_mill_stats tables in the query indicates reliance on the architect_mill_stats table for mill count data."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Schema Ambiguity",
+          "subtype": "Aggregate"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 77,
+      "question": "Show the longest bridge per country",
+      "sql": "SELECT\n    b.location AS country,\n    b.name AS bridge_name,\n    b.length_meters AS length_meters,\n    b.length_feet AS length_feet\nFROM\n    bridge b\nJOIN\n    architect a ON b.architect_id = a.id\nWHERE\n    b.length_meters = (\n        SELECT MAX(length_meters)\n        FROM bridge\n    )\n    AND (\n        b.location LIKE '%China%' OR\n        b.location LIKE '%USA%' OR\n        b.location LIKE '%United States%' OR\n        b.location LIKE '%United Kingdom%' OR\n        b.location LIKE '%Africa%' OR\n        b.location LIKE '%Europe%'\n    )\nGROUP BY\n    b.location, b.name, b.length_meters, b.length_feet\nORDER BY\n    b.location;",
+      "ambiguities": [
+        {
+          "phrase": "Show the longest bridge per country",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The intent is to find the single longest bridge for each distinct country mentioned in the location field.",
+          "plausible_alternative": "The intent could be to list all bridges per country sorted by length, showing all long bridges in each country.",
+          "evidence_from_sql": "The SQL uses MAX(length_meters) to select the longest bridge globally and filters by a limited set of countries. There is no grouping by country to ensure a single longest bridge per country."
+        },
+        {
+          "phrase": "Show the longest bridge per country",
+          "type": "Data Ambiguity",
+          "subtype": "Value",
+          "assumption_made": "Countries are identified through specific substrings in the location field, such as '%China%', '%USA%', etc.",
+          "plausible_alternative": "Countries could be identified using more comprehensive or different location patterns or using a separate table or field that explicitly lists countries.",
+          "evidence_from_sql": "The SQL uses LIKE conditions to match countries within the location text. This may not comprehensively capture all instances of countries, as it depends on specific substrings like '%China%' and '%USA%'."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 78,
+      "question": "List structures designed by architects from Canada",
+      "sql": "SELECT b.id, b.name, b.location, b.length_meters, b.length_feet\nFROM bridge b\nJOIN architect a ON b.architect_id = a.id\nWHERE a.name = 'Frank Gehry' OR a.name = 'Canadian' AND a.id IN (\n    SELECT architect_id FROM architect WHERE nationality1 = 'Canadian' OR nationality2 = 'Canadian'\n);",
+      "ambiguities": [
+        {
+          "phrase": "List structures designed by architects from Canada",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Attachment",
+          "assumption_made": "The question assumes that 'structures' includes both bridges and mills, but the SQL query only selects from the 'bridge' table.",
+          "plausible_alternative": "The query should include both bridges and mills designed by Canadian architects.",
+          "evidence_from_sql": "The generated SQL only selects from the 'bridge' table and does not consider the 'mill' table."
+        },
+        {
+          "phrase": "List structures designed by architects from Canada",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Attachment",
+          "assumption_made": "The question assumes that 'architects from Canada' refers to any Canadian nationality, but the SQL query checks both 'nationality1' and 'nationality2'.",
+          "plausible_alternative": "The query should only check 'nationality1' for Canadian architects.",
+          "evidence_from_sql": "The SQL query uses 'nationality1 = 'Canadian' OR nationality2 = 'Canadian'' to filter architects, which might include more than intended if 'nationality2' is used."
+        },
+        {
+          "phrase": "List structures designed by architects from Canada",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The SQL query assumes 'Frank Gehry' is the only architect from Canada, but does not account for other potential Canadian architects.",
+          "plausible_alternative": "The query should dynamically select architects based on Canadian nationality without hardcoding names.",
+          "evidence_from_sql": "The SQL uses 'a.name = 'Frank Gehry' OR a.name = 'Canadian'' which incorrectly uses 'Canadian' as a name."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Schema Ambiguity",
+          "subtype": "Table"
+        },
+        {
+          "type": "Schema Ambiguity",
+          "subtype": "Join"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 79,
+      "question": "Show bridges with size greater than 200",
+      "sql": "SELECT b.id, b.name, b.location, b.length_meters, b.length_feet\nFROM bridge b\nWHERE b.length_meters > 200 OR b.length_feet > 200;",
+      "ambiguities": [
+        {
+          "phrase": "Show bridges with size greater than 200",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The query assumes that 'size' refers to both 'length_meters' and 'length_feet' columns.",
+          "plausible_alternative": "The query could have been intended to refer only to one of the size-related columns, such as 'length_meters' or 'length_feet'.",
+          "evidence_from_sql": "The SQL uses 'b.length_meters > 200 OR b.length_feet > 200', indicating an assumption that either column could represent 'size'."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 80,
+      "question": "Find the most significant mill",
+      "sql": "SELECT a.name AS architect_name,\n       m.name AS mill_name,\n       m.location,\n       m.type,\n       m.built_year,\n       m.notes,\n       COUNT(*) OVER () AS total_mills_queried,\n       RANK() OVER (ORDER BY AVG(m.built_year) DESC) AS significance_rank\nFROM mill m\nJOIN architect a ON m.architect_id = a.id\nWHERE m.type IN ('Grondzeiler', 'Bergmolen')\nGROUP BY m.id, m.name, m.location, m.type, m.built_year, m.notes, a.name\nORDER BY significance_rank ASC\nLIMIT 1;",
+      "ambiguities": [
+        {
+          "phrase": "Find the most significant mill",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The most significant mill is determined by ranking mills based on the average built year in descending order.",
+          "plausible_alternative": "The significance could be based on other criteria such as the earliest or latest built year, or the type of mill.",
+          "evidence_from_sql": "RANK() OVER (ORDER BY AVG(m.built_year) DESC) AS significance_rank"
+        },
+        {
+          "phrase": "Find the most significant mill",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Scope",
+          "assumption_made": "Only mills of type 'Grondzeiler' or 'Bergmolen' are considered significant.",
+          "plausible_alternative": "All mills regardless of type could be considered significant.",
+          "evidence_from_sql": "WHERE m.type IN ('Grondzeiler', 'Bergmolen')"
+        },
+        {
+          "phrase": "Find the most significant mill",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Temporal",
+          "assumption_made": "The significance is determined by the built year of the mills.",
+          "plausible_alternative": "Significance could be determined by the year of insertion into the database or other temporal aspects.",
+          "evidence_from_sql": "ORDER BY significance_rank ASC"
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 81,
+      "question": "List architects who designed bridges in Utah and mills in Coswarem",
+      "sql": "SELECT DISTINCT a.id, a.name\nFROM architect a\nJOIN bridge b ON a.id = b.architect_id\nJOIN mill m ON a.id = m.architect_id\nWHERE b.location LIKE '%Utah%'\n  AND m.location = 'Coswarem';",
+      "ambiguities": [
+        {
+          "phrase": "List architects who designed bridges in Utah and mills in Coswarem",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Scope",
+          "assumption_made": "The question assumes that the architects should have designed both bridges in Utah and mills specifically located in Coswarem, rather than either one or the other.",
+          "plausible_alternative": "The question could be interpreted to list architects who designed either bridges in Utah or mills in Coswarem, or those who designed bridges in Utah and any mill, or any bridge and mills in Coswarem.",
+          "evidence_from_sql": "The SQL uses 'AND' to require both conditions (bridges in Utah and mills in Coswarem) to be true simultaneously."
+        },
+        {
+          "phrase": "List architects who designed bridges in Utah and mills in Coswarem",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Attachment",
+          "assumption_made": "The location 'Utah' is assumed to refer only to the location of the bridges, and 'Coswarem' is assumed to refer only to the location of the mills.",
+          "plausible_alternative": "It could be interpreted that 'Utah' might refer to the location of either bridges or mills, or that 'Coswarem' might refer to either the location of the mill or the bridge.",
+          "evidence_from_sql": "The SQL uses two separate WHERE conditions to attach 'Utah' to bridge location and 'Coswarem' to mill location."
+        },
+        {
+          "phrase": "List architects who designed bridges in Utah and mills in Coswarem",
+          "type": "Schema Ambiguity",
+          "subtype": "Join",
+          "assumption_made": "It is assumed that the architect's ID can be used to join both the 'bridge' and 'mill' tables directly to the 'architect' table.",
+          "plausible_alternative": "The question could potentially be interpreted to involve more complex joins if there were additional tables or relationships not directly specified in the schema.",
+          "evidence_from_sql": "The SQL uses joins between 'architect' and both 'bridge' and 'mill' tables using the architect_id."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Attachment"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 82,
+      "question": "Show modern mills",
+      "sql": "SELECT m.id, m.name, m.location, m.type, m.built_year\nFROM mill m\nWHERE m.type IN ('Grondzeiler', 'Bergmolen')\nAND m.built_year >= 1900;",
+      "ambiguities": [
+        {
+          "phrase": "Show modern mills",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Temporal",
+          "assumption_made": "Modern mills are defined as those built in or after the year 1900.",
+          "plausible_alternative": "Modern mills could be defined as those built in the last 50 years, or in the 20th century.",
+          "evidence_from_sql": "The SQL query uses 'm.built_year >= 1900' to filter mills, assuming that 'modern' refers to mills built from the year 1900 onwards."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Temporal"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 83,
+      "question": "Calculate the average of the length_meters column for all bridges in the bridge table.",
+      "sql": "SELECT AVG(length_meters) AS avg_bridge_length_meters\nFROM bridge;",
+      "ambiguities": [
+        {
+          "phrase": "Calculate the average of the length_meters column for all bridges in the bridge table.",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The phrase 'all bridges' means to calculate the average length of every entry in the 'length_meters' column of the 'bridge' table.",
+          "plausible_alternative": "The question might imply calculating the average length only for bridges meeting a specific condition, such as those longer than a certain threshold or designed by a particular architect.",
+          "evidence_from_sql": "The generated SQL 'SELECT AVG(length_meters) AS avg_bridge_length_meters FROM bridge;' calculates the average for all entries in the 'length_meters' column, without any conditions."
+        }
+      ],
+      "expected_ambiguities": [],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 84,
+      "question": "List the names of bridges where length_meters is between 70 and 80 inclusive.",
+      "sql": "SELECT b.name\nFROM bridge b\nWHERE b.length_meters BETWEEN 70 AND 80;",
+      "ambiguities": [
+        {
+          "phrase": "List the names of bridges where length_meters is between 70 and 80 inclusive.",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The question intends to filter the bridges based on the length in meters and retrieve their names.",
+          "plausible_alternative": "The question could be interpreted to include additional criteria such as sorting or grouping the results.",
+          "evidence_from_sql": "The SQL query uses a WHERE clause with a BETWEEN condition on length_meters, indicating a filter operation without sorting or grouping."
+        }
+      ],
+      "expected_ambiguities": [],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 85,
+      "question": "List bridges located in Chad",
+      "sql": "SELECT b.id, b.name, b.location, b.length_meters, b.length_feet\nFROM bridge b\nWHERE b.location LIKE '%Chad%';",
+      "ambiguities": [
+        {
+          "phrase": "List bridges located in Chad",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Value",
+          "assumption_made": "The query assumes 'located in Chad' means any mention of 'Chad' in the location field, including partial matches.",
+          "plausible_alternative": "The query could have assumed an exact match for the location field, such as 'location = 'Chad''.",
+          "evidence_from_sql": "The SQL uses 'b.location LIKE '%Chad%'' which allows for partial matches, indicating an assumption of any mention of 'Chad' in the location."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Data Ambiguity",
+          "subtype": "Value"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 86,
+      "question": "Display the architect_id values from architect_mill_stats that have mill_count strictly equal to 2.",
+      "sql": "SELECT architect_id\nFROM architect_mill_stats\nWHERE mill_count = 2;",
+      "ambiguities": [
+        {
+          "phrase": "Display the architect_id values from architect_mill_stats that have mill_count strictly equal to 2.",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The question explicitly specifies the condition 'strictly equal to 2', which is directly translated to 'mill_count = 2' in SQL.",
+          "plausible_alternative": "The question might have intended to ask for architect_ids where mill_count is greater than or equal to 2, which would translate to 'mill_count >= 2'.",
+          "evidence_from_sql": "The SQL query uses 'WHERE mill_count = 2', indicating the assumption that 'strictly equal to 2' means exact equality."
+        }
+      ],
+      "expected_ambiguities": [],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 87,
+      "question": "Show bridges where length is 65",
+      "sql": "SELECT b.id, b.name, b.location, b.length_meters, b.length_feet\nFROM bridge b\nWHERE b.length_meters = 65 OR b.length_feet = 65;",
+      "ambiguities": [
+        {
+          "phrase": "Show bridges where length is 65",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The query assumes that 'length is 65' refers to either the length in meters or the length in feet being exactly 65.",
+          "plausible_alternative": "The question might have intended to refer only to one unit of measurement, either meters or feet, rather than both.",
+          "evidence_from_sql": "The SQL query uses 'b.length_meters = 65 OR b.length_feet = 65' to capture both possibilities, which assumes both units are relevant."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent"
+        },
+        {
+          "type": "Schema Ambiguity",
+          "subtype": "Column"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 88,
+      "question": "Find mills with Dutch architects",
+      "sql": "SELECT m.id, m.name, m.location, m.type, m.built_year, m.notes\nFROM mill m\nJOIN architect a ON m.architect_id = a.id\nJOIN architect_mill_stats ams ON a.id = ams.architect_id\nWHERE a.name IN (\n    SELECT name FROM architect\n    WHERE nationality1 = 'Dutch' OR nationality2 = 'Dutch'\n);",
+      "ambiguities": [
+        {
+          "phrase": "Find mills with Dutch architects",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The query assumes architects are defined by their nationality fields (nationality1, nationality2), and the question refers to these fields to identify 'Dutch architects'.",
+          "plausible_alternative": "The question might be interpreted as seeking mills designed by architects who have 'Dutch' as their name.",
+          "evidence_from_sql": "The SQL uses 'nationality1 = 'Dutch' OR nationality2 = 'Dutch'' to filter architects, aligning with the interpretation that nationality fields indicate Dutch architects."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Schema Ambiguity",
+          "subtype": "Column"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 89,
+      "question": "Show the top 3 longest bridges",
+      "sql": "SELECT name, length_meters\nFROM bridge\nORDER BY length_meters DESC\nLIMIT 3;",
+      "ambiguities": [
+        {
+          "phrase": "top 3 longest bridges",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The question intends to sort bridges by their length in descending order and limit the result to the top 3.",
+          "plausible_alternative": "The question could have intended to show bridges longer than a specific threshold or longer than a certain number of bridges without a fixed limit of 3.",
+          "evidence_from_sql": "The SQL uses 'ORDER BY length_meters DESC' and 'LIMIT 3', indicating an intent to retrieve the top 3 longest bridges."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 90,
+      "question": "List architects and their oldest work",
+      "sql": "SELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    b.id AS bridge_id,\n    b.name AS bridge_name,\n    b.location AS bridge_location,\n    b.length_meters AS bridge_length_meters,\n    b.length_feet AS bridge_length_feet,\n    m.id AS mill_id,\n    m.name AS mill_name,\n    m.location AS mill_location,\n    m.type AS mill_type,\n    m.built_year AS mill_built_year,\n    ams.earliest_built_year AS oldest_work_year\nFROM\n    architect a\nLEFT JOIN\n    bridge b ON a.id = b.architect_id\nLEFT JOIN\n    mill m ON a.id = m.architect_id\nLEFT JOIN\n    architect_mill_stats ams ON a.id = ams.architect_id\nWHERE\n    ams.architect_id IS NOT NULL\n    OR (m.built_year IS NOT NULL AND m.built_year = ams.earliest_built_year)\nGROUP BY\n    a.id, a.name, a.nationality1, a.nationality2, a.gender, b.id, b.name, b.location, b.length_meters, b.length_feet, m.id, m.name, m.location, m.type, m.built_year, ams.earliest_built_year\nORDER BY\n    a.name;\n\n\n**Corrected Query:**\n\n\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    CASE\n        WHEN ams.earliest_built_year IS NOT NULL THEN ams.earliest_built_year\n        WHEN m.built_year IS NOT NULL THEN m.built_year\n        ELSE NULL\n    END AS oldest_work_year,\n    CASE\n        WHEN ams.earliest_built_year IS NOT NULL THEN 'Bridge'\n        WHEN m.built_year IS NOT NULL THEN 'Mill'\n        ELSE NULL\n    END AS work_type\nFROM\n    architect a\nLEFT JOIN\n    architect_mill_stats ams ON a.id = ams.architect_id\nLEFT JOIN\n    mill m ON a.id = m.architect_id\nWHERE\n    ams.earliest_built_year IS NULL OR m.built_year IS NOT NULL\nGROUP BY\n    a.id, a.name, a.nationality1, a.nationality2, a.gender, ams.earliest_built_year\nORDER BY\n    a.name;\n\n\n**Final Query:**\n\n\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    CASE\n        WHEN ams.earliest_built_year IS NOT NULL THEN ams.architect_id, ams.earliest_built_year\n        WHEN m.built_year IS NOT NULL THEN m.architect_id, m.built_year\n    END AS (architect_id, oldest_work_year)\nFROM\n    architect a\nLEFT JOIN\n    architect_mill_stats ams ON a.id = ams.architect_id\nLEFT JOIN\n    mill m ON a.id = m.architect_id\nWHERE\n    ams.earliest_built_year IS NULL OR m.built_year IS NOT NULL\nGROUP BY\n    a.id, a.name, a.nationality1, a.nationality2, a.gender, m.built_year\nORDER BY\n    a.name;\n\n-- Revised to properly list oldest works:\n\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    CASE\n        WHEN ams.earliest_built_year IS NOT NULL THEN ams.earliest_built_year\n        ELSE m.built_year\n    END AS oldest_work_year,\n    CASE\n        WHEN ams.earliest_built_year IS NOT NULL THEN 'Bridge Statistics'\n        ELSE 'Mill'\n    END AS work_type,\n    m.built_year AS mill_built_year\nFROM architect a\nLEFT JOIN architect_mill_stats ams ON a.id = ams.architect_id\nLEFT JOIN mill m ON a.id = m.architect_id\nWHERE m.built_year IS NOT NULL OR ams.earliest_built_year IS NOT NULL\nGROUP BY a.id, a.name, a.nationality1, a.nationality2, a.gender, m.built_year, ams.earliest_built_year\nHAVING m.built_year IS NOT NULL OR ams.earliest_built_year IS NOT NULL\nORDER BY a.name;\n\n---\n**Correct Final Query:**\n\n\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    CASE\n        WHEN ams.earliest_built_year IS NOT NULL THEN ams.architect_id, ams.earliest_built_year\n        ELSE m.architect_id, m.built_year\n    END AS (architect_id, oldest_work_year),\n    CASE\n        WHEN ams.earliest_built_year IS NOT NULL THEN 'Bridge'\n        ELSE 'Mill'\n    END AS work_type\nFROM architect a\nLEFT JOIN architect_mill_stats ams ON a.id = ams.architect_id\nLEFT JOIN mill m ON a.id = m.architect_id\nWHERE m.built_year IS NOT NULL OR ams.earliest_built_year IS NOT NULL\nGROUP BY a.id, a.name, a.nationality1, a.nationality2, a.gender, m.built_year, ams.earliest_built_year\nORDER BY a.name;\n\n---\n**Simplified Query:**\n\n\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    CASE\n        WHEN ams.earliest_built_year IS NOT NULL THEN ams.earliest_built_year\n        ELSE m.built_year\n    END AS oldest_work_year,\n    CASE\n        WHEN ams.earliest_built_year IS NOT NULL THEN 'Bridge'\n        ELSE 'Mill'\n    END AS work_type\nFROM architect a\nLEFT JOIN architect_mill_stats ams ON a.id = ams.architect_id\nLEFT JOIN mill m ON a.id = m.architect_id\nWHERE m.built_year IS NOT NULL OR ams.earliest_built_year IS NOT NULL\nGROUP BY a.id, a.name, a.nationality1, a.nationality2, a.gender, m.built_year, ams.earliest_built_year\nORDER BY a.name;\n\n\n**Final Corrected Query:**\n\n\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    CASE\n        WHEN ams.earliest_built_year IS NOT NULL THEN ams.architect_id, ams.earliest_built_year\n        ELSE m.architect_id, m.built_year\n    END AS (architect_id, oldest_work_year),\n    CASE\n        WHEN ams.earliest_built_year IS NOT NULL THEN 'Bridge'\n        ELSE 'Mill'\n    END AS work_type,\n    m.built_year AS mill_built_year\nFROM architect a\nLEFT JOIN architect_mill_stats ams ON a.id = ams.architect_id\nLEFT JOIN mill m ON a.id = m.architect_id\nWHERE m.built_year IS NOT NULL OR ams.earliest_built_year IS NOT NULL\nGROUP BY a.id, a.name, a.nationality1, a.nationality2, a.gender, m.built_year, ams.earliest_built_year\nORDER BY a.name;\n\n---\n**Simplified and accurate:**\n\n\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    ams.earliest_built_year AS oldest_work_year,\n    CASE\n        WHEN ams.earliest_built_year IS NOT NULL THEN 'Bridge'\n        ELSE m.built_year\n    END AS work_type\nFROM architect a\nLEFT JOIN architect_mill_stats ams ON a.id = ams.architect_id\nLEFT JOIN mill m ON a.id = m.architect_id\nWHERE ams.earliest_built_year IS NULL OR m.built_year IS NOT NULL\nGROUP BY a.id, a.name, a.nationality1, a.nationality2, a.gender, ams.earliest_built_year, m.built_year\nORDER BY a.name;\n\n\n**Final, accurate query:**\n\n\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    CASE\n        WHEN ams.earliest_built_year IS NOT NULL THEN ams.earliest_built_year\n        ELSE m.built_year\n    END AS oldest_work_year\nFROM architect a\nLEFT JOIN architect_mill_stats ams ON a.id = ams.architect_id\nLEFT JOIN mill m ON a.id = m.architect_id\nWHERE m.built_year IS NOT NULL OR ams.earliest_built_year IS NOT NULL\nGROUP BY a.id, a.name, a.nationality1, a.nationality2, a.gender, m.built_year, ams.earliest_built_year\nORDER BY a.name;\n\n\n**Corrected and final:**\n\n\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    CASE\n        WHEN ams.earliest_built_year IS NOT NULL THEN ams.architect_id, ams.earliest_built_year\n        ELSE m.architect_id, m.built_year\n    END AS (architect_id, oldest_work_year),\n    CASE\n        WHEN ams.earliest_built_year IS NOT NULL THEN 'Bridge'\n        ELSE 'Mill'\n    END AS work_type\nFROM architect a\nLEFT JOIN architect_mill_stats ams ON a.id = ams.architect_id\nLEFT JOIN mill m ON a.id = m.architect_id\nWHERE m.built_year IS NOT NULL OR ams.earliest_built_year IS NOT NULL\nGROUP BY a.id, a.name, a.nationality1, a.nationality2, a.gender, m.built_year, ams.earliest_built_year\nORDER BY a.name;\n\n---\n**Final SQLite Query:**\n\n\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    ams.earliest_built_year AS oldest_work_year\nFROM architect a\nLEFT JOIN architect_mill_stats ams ON a.id = ams.architect_id\nWHERE ams.earliest_built_year IS NOT NULL\nUNION ALL\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    m.built_year AS oldest_work_year\nFROM architect a\nJOIN mill m ON a.id = m.architect_id\nWHERE m.built_year IS NOT NULL\nORDER BY a.name;\n---\n\n**Final, precise query:**\n\n\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    CASE\n        WHEN ams.earliest_built_year IS NOT NULL THEN ams.earliest_built_year\n        ELSE m.built_year\n    END AS oldest_work_year\nFROM architect a\nLEFT JOIN architect_mill_stats ams ON a.id = ams.architect_id\nLEFT JOIN mill m ON a.id = m.architect_id\nWHERE ams.earliest_built_year IS NULL OR m.built_year IS NOT NULL\nGROUP BY a.id, a.name, a.nationality1, a.nationality2, a.gender, m.built_year, ams.earliest_built_year\nORDER BY a.name;\n\n\n**Simplified and accurate:**\n\n\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    ams.earliest_built_year AS oldest_work_year\nFROM architect a\nLEFT JOIN architect_mill_stats ams ON a.id = ams.architect_id\nWHERE ams.earliest_built_year IS NOT NULL\nUNION ALL\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    m.built_year AS oldest_work_year\nFROM architect a\nJOIN mill m ON a.id = m.architect_id\nORDER BY a.name;\n\n\n**Final, working query:**\n\n\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    CASE\n        WHEN ams.earliest_built_year IS NOT NULL THEN ams.earliest_built_year\n        ELSE m.built_year\n    END AS oldest_work_year\nFROM architect a\nLEFT JOIN architect_mill_stats ams ON a.id = ams.architect_id\nLEFT JOIN mill m ON a.id = m.architect_id\nWHERE ams.earliest_built_year IS NULL OR m.built_year IS NOT NULL\nGROUP BY a.id, a.name, a.nationality1, a.nationality2, a.gender\nORDER BY a.name;\n---\n\n**Final, correct query:**\n\n\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    ams.earliest_built_year AS oldest_work_year\nFROM architect a\nLEFT JOIN architect_mill_stats ams ON a.id = ams.architect_id\nWHERE ams.architect_id IS NOT NULL\nUNION ALL\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    m.built_year AS oldest_work_year\nFROM architect a\nJOIN mill m ON a.id = m.architect_id\nORDER BY a.name;\n\n\n**Simplified and accurate:**\n\n\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    CASE\n        WHEN ams.earliest_built_year IS NOT NULL THEN ams.earliest_built_year\n        ELSE m.built_year\n    END AS oldest_work_year\nFROM architect a\nLEFT JOIN architect_mill_stats ams ON a.id = ams.architect_id\nLEFT JOIN mill m ON a.id = m.architect_id\nWHERE ams.earliest_built_year IS NULL OR m.built_year IS NOT NULL\nORDER BY a.name;\n\n\n**Final, precise query:**\n\n\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    ams.earliest_built_year AS oldest_work_year\nFROM architect a\nLEFT JOIN architect_mill_stats ams ON a.id = ams.architect_id\nWHERE ams.architect_id IS NOT NULL\nUNION ALL\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    m.built_year AS oldest_work_year\nFROM architect a\nJOIN mill m ON a.id = m.architect_id\nORDER BY a.name;\n\n\n**Final, working query:**\n\n\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    COALESCE(ams.earliest_built_year, m.built_year) AS oldest_work_year\nFROM architect a\nLEFT JOIN architect_mill_stats ams ON a.id = ams.architect_id\nLEFT JOIN mill m ON a.id = m.architect_id\nORDER BY a.name;\n---\n\n\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    ams.earliest_built_year AS oldest_work_year\nFROM architect a\nLEFT JOIN architect_mill_stats ams ON a.id = ams.architect_id\nWHERE ams.architect_id IS NOT NULL\nUNION ALL\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    m.built_year AS oldest_work_year\nFROM architect a\nJOIN mill m ON a.id = m.architect_id\nORDER BY a.name;\n\n\n**Corrected and final:**\n\n\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    CASE\n        WHEN ams.earliest_built_year IS NOT NULL THEN ams.earliest_built_year\n        ELSE m.built_year\n    END AS oldest_work_year\nFROM architect a\nLEFT JOIN architect_mill_stats ams ON a.id = ams.architect_id\nLEFT JOIN mill m ON a.id = m.architect_id\nWHERE ams.earliest_built_year IS NULL OR m.built_year IS NOT NULL\nORDER BY a.name;\n\n\n**Final, accurate query:**\n\n\nSELECT DISTINCT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    ams.earliest_built_year AS oldest_work_year\nFROM architect a\nLEFT JOIN architect_mill_stats ams ON a.id = ams.architect_id\nWHERE ams.architect_id IS NOT NULL\nUNION ALL\nSELECT DISTINCT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    m.built_year AS oldest_work_year\nFROM architect a\nJOIN mill m ON a.id = m.architect_id\nORDER BY a.name;\n---\n\n\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    COALESCE(ams.earliest_built_year, m.built_year) AS oldest_work_year\nFROM architect a\nLEFT JOIN architect_mill_stats ams ON a.id = ams.architect_id\nLEFT JOIN mill m ON a.id = m.architect_id\nWHERE ams.earliest_built_year IS NULL OR m.built_year IS NOT NULL\nGROUP BY a.id, a.name, a.nationality1, a.nationality2, a.gender, m.built_year, ams.earliest_built_year\nORDER BY a.name;\n\n\n**Final, accurate and concise:**\n\n\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    ams.earliest_built_year AS oldest_work_year\nFROM architect a\nLEFT JOIN architect_mill_stats ams ON a.id = ams.architect_id\nWHERE ams.architect_id IS NOT NULL\nUNION ALL\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    m.built_year AS oldest_work_year\nFROM architect a\nJOIN mill m ON a.id = m.architect_id\nORDER BY a.name;\n---\n\n\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    CASE\n        WHEN ams.earliest_built_year IS NOT NULL THEN ams.earliest_built_year\n        ELSE NULL\n    END AS bridge_oldest_year,\n    CASE\n        WHEN m.built_year IS NOT NULL THEN m.built_year\n        ELSE NULL\n    END AS mill_oldest_year\nFROM architect a\nLEFT JOIN architect_mill_stats ams ON a.id = ams.architect_id\nLEFT JOIN mill m ON a.id = m.architect_id\nWHERE ams.earliest_built_year IS NOT NULL OR m.built_year IS NOT NULL\nGROUP BY a.id, a.name, a.nationality1, a.nationality2, a.gender, m.built_year, ams.earliest_built_year\nHAVING bridge_oldest_year IS NOT NULL OR mill_oldest_year IS NOT NULL\nORDER BY a.name;\n\n\n**Final, precise query:**\n\n\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    COALESCE(ams.earliest_built_year, m.built_year) AS oldest_work_year\nFROM architect a\nLEFT JOIN architect_mill_stats ams ON a.id = ams.architect_id\nLEFT JOIN mill m ON a.id = m.architect_id\nWHERE ams.earliest_built_year IS NULL OR m.built_year IS NOT NULL\nORDER BY a.name;\n\n\n**Corrected and final:**\n\n\nSELECT DISTINCT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    ams.earliest_built_year AS oldest_work_year\nFROM architect a\nLEFT JOIN architect_mill_stats ams ON a.id = ams.architect_id\nWHERE ams.architect_id IS NOT NULL\nUNION ALL\nSELECT DISTINCT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    m.built_year AS oldest_work_year\nFROM architect a\nJOIN mill m ON a.id = m.architect_id\nORDER BY a.name;\n\n\n**Final, working query:**\n\n\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    ams.earliest_built_year AS oldest_work_year\nFROM architect a\nLEFT JOIN architect_mill_stats ams ON a.id = ams.architect_id\nWHERE ams.architect_id IS NOT NULL\nUNION ALL\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    m.built_year AS oldest_work_year\nFROM architect a\nJOIN mill m ON a.id = m.architect_id\nORDER BY a.name;\n\n\n**Final, accurate:**\n\n\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    COALESCE(ams.earliest_built_year, m.built_year) AS oldest_work_year\nFROM architect a\nLEFT JOIN architect_mill_stats ams ON a.id = ams.architect_id\nLEFT JOIN mill m ON a.id = m.architect_id\nWHERE ams.earliest_built_year IS NULL OR m.built_year IS NOT NULL\nORDER BY a.name;\n---\n\n\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    ams.earliest_built_year AS oldest_work_year\nFROM architect a\nLEFT JOIN architect_mill_stats ams ON a.id = ams.architect_id\nWHERE ams.architect_id IS NOT NULL\nUNION ALL\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    m.built_year AS oldest_work_year\nFROM architect a\nJOIN mill m ON a.id = m.architect_id\nORDER BY a.name;\n---\n\n\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    CASE\n        WHEN ams.earliest_built_year IS NOT NULL THEN ams.earliest_built_year\n        ELSE NULL\n    END AS bridge_oldest_year,\n    CASE\n        WHEN m.built_year IS NOT NULL THEN m.built_year\n        ELSE NULL\n    END AS mill_oldest_year\nFROM architect a\nLEFT JOIN architect_mill_stats ams ON a.id = ams.architect_id\nLEFT JOIN mill m ON a.id = m.architect_id\nWHERE ams.earliest_built_year IS NOT NULL OR m.built_year IS NOT NULL\nGROUP BY a.id, a.name, a.nationality1, a.nationality2, a.gender, m.built_year, ams.earliest_built_year\nORDER BY a.name;\n\n\n**Final, precise and complete:**\n\n\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    COALESCE(ams.earliest_built_year, m.built_year) AS oldest_work_year\nFROM architect a\nLEFT JOIN architect_mill_stats ams ON a.id = ams.architect_id\nLEFT JOIN mill m ON a.id = m.architect_id\nWHERE ams.earliest_built_year IS NULL OR m.built_year IS NOT NULL\nORDER BY a.name;\n---\n\n\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    ams.earliest_built_year AS oldest_work_year\nFROM architect a\nLEFT JOIN architect_mill_stats ams ON a.id = ams.architect_id\nWHERE ams.architect_id IS NOT NULL\nUNION ALL\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    m.built_year AS oldest_work_year\nFROM architect a\nJOIN mill m ON a.id = m.architect_id\nORDER BY a.name;\n\n\n**Final, working query:**\n\n\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    CASE\n        WHEN ams.earliest_built_year IS NOT NULL THEN ams.earliest_built_year\n        ELSE m.built_year\n    END AS oldest_work_year\nFROM architect a\nLEFT JOIN architect_mill_stats ams ON a.id = ams.architect_id\nLEFT JOIN mill m ON a.id = m.architect_id\nWHERE ams.earliest_built_year IS NULL OR m.built_year IS NOT NULL\nORDER BY a.name;\n---\n\n\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    ams.earliest_built_year AS oldest_work_year\nFROM architect a\nLEFT JOIN architect_mill_stats ams ON a.id = ams.architect_id\nWHERE ams.architect_id IS NOT NULL\nUNION ALL\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    m.built_year AS oldest_work_year\nFROM architect a\nJOIN mill m ON a.id = m.architect_id\nORDER BY a.name;\n---\n\n\nSELECT DISTINCT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    ams.earliest_built_year AS oldest_work_year\nFROM architect a\nLEFT JOIN architect_mill_stats ams ON a.id = ams.architect_id\nWHERE ams.architect_id IS NOT NULL\nUNION ALL\nSELECT DISTINCT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    m.built_year AS oldest_work_year\nFROM architect a\nJOIN mill m ON a.id = m.architect_id\nORDER BY a.name;\n\n\n**Final, correct query:**\n\n\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    COALESCE(ams.earliest_built_year, m.built_year) AS oldest_work_year\nFROM architect a\nLEFT JOIN architect_mill_stats ams ON a.id = ams.architect_id\nLEFT JOIN mill m ON a.id = m.architect_id\nWHERE ams.earliest_built_year IS NULL OR m.built_year IS NOT NULL\nORDER BY a.name;\n---\n\n\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    ams.earliest_built_year AS oldest_work_year\nFROM architect a\nLEFT JOIN architect_mill_stats ams ON a.id = ams.architect_id\nWHERE ams.architect_id IS NOT NULL\nUNION ALL\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    m.built_year AS oldest_work_year\nFROM architect a\nJOIN mill m ON a.id = m.architect_id\nORDER BY a.name;\n\n\n**Final, precise and complete:**\n\n\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    CASE\n        WHEN ams.earliest_built_year IS NOT NULL THEN ams.earliest_built_year\n        ELSE NULL\n    END AS bridge_oldest_year,\n    CASE\n        WHEN m.built_year IS NOT NULL THEN m.built_year\n        ELSE NULL\n    END AS mill_oldest_year\nFROM architect a\nLEFT JOIN architect_mill_stats ams ON a.id = ams.architect_id\nLEFT JOIN mill m ON a.id = m.architect_id\nWHERE ams.earliest_built_year IS NOT NULL OR m.built_year IS NOT NULL\nORDER BY a.name;\n\n\n**Final, working query:**\n\n\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    COALESCE(ams.earliest_built_year, m.built_year) AS oldest_work_year\nFROM architect a\nLEFT JOIN architect_mill_stats ams ON a.id = ams.architect_id\nLEFT JOIN mill m ON a.id = m.architect_id\nWHERE ams.earliest_built_year IS NULL OR m.built_year IS NOT NULL\nGROUP BY a.id, a.name, a.nationality1, a.nationality2, a.gender, m.built_year, ams.earliest_built_year\nORDER BY a.name;\n\n\n**Final, accurate:**\n\n\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    ams.earliest_built_year AS oldest_work_year\nFROM architect a\nLEFT JOIN architect_mill_stats ams ON a.id = ams.architect_id\nWHERE ams.architect_id IS NOT NULL\nUNION ALL\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    m.built_year AS oldest_work_year\nFROM architect a\nJOIN mill m ON a.id = m.architect_id\nORDER BY a.name;\n---\n\n\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    ams.earliest_built_year AS oldest_work_year\nFROM architect a\nLEFT JOIN architect_mill_stats ams ON a.id = ams.architect_id\nWHERE ams.architect_id IS NOT NULL\nUNION ALL\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    m.built_year AS oldest_work_year\nFROM architect a\nJOIN mill m ON a.id = m.architect_id\nORDER BY a.name;\n---\n\n\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    COALESCE(ams.earliest_built_year, m.built_year) AS oldest_work_year\nFROM architect a\nLEFT JOIN architect_mill_stats ams ON a.id = ams.architect_id\nLEFT JOIN mill m ON a.id = m.architect_id\nWHERE ams.earliest_built_year IS NULL OR m.built_year IS NOT NULL\nORDER BY a.name;\n---\n\n\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    ams.earliest_built_year AS oldest_work_year\nFROM architect a\nLEFT JOIN architect_mill_stats ams ON a.id = ams.architect_id\nWHERE ams.architect_id IS NOT NULL\nUNION ALL\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    m.built_year AS oldest_work_year\nFROM architect a\nJOIN mill m ON a.id = m.architect_id\nORDER BY a.name;\n---\n\n\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    CASE\n        WHEN ams.earliest_built_year IS NOT NULL THEN ams.earliest_built_year\n        ELSE NULL\n    END AS bridge_oldest_year,\n    CASE\n        WHEN m.built_year IS NOT NULL THEN m.built_year\n        ELSE NULL\n    END AS mill_oldest_year\nFROM architect a\nLEFT JOIN architect_mill_stats ams ON a.id = ams.architect_id\nLEFT JOIN mill m ON a.id = m.architect_id\nWHERE ams.earliest_built_year IS NOT NULL OR m.built_year IS NOT NULL\nORDER BY a.name;\n\n\n**Final, precise and working:**\n\n\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    ams.earliest_built_year AS oldest_work_year\nFROM architect a\nLEFT JOIN architect_mill_stats ams ON a.id = ams.architect_id\nWHERE ams.architect_id IS NOT NULL\nUNION ALL\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    m.built_year AS oldest_work_year\nFROM architect a\nJOIN mill m ON a.id = m.architect_id\nORDER BY a.name;\n---\n\n**Final, correct query:**\n\n\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    COALESCE(ams.earliest_built_year, m.built_year) AS oldest_work_year\nFROM architect a\nLEFT JOIN architect_mill_stats ams ON a.id = ams.architect_id\nLEFT JOIN mill m ON a.id = m.architect_id\nWHERE ams.earliest_built_year IS NULL OR m.built_year IS NOT NULL\nORDER BY a.name;\n---\n\n\nWITH bridge_stats AS (\n    SELECT architect_id, MIN(built_year) AS earliest_built_year\n    FROM bridge\n    GROUP BY architect_id\n),\nmill_stats AS (\n    SELECT architect_id, MIN(built_year) AS earliest_built_year\n    FROM mill\n    GROUP BY architect_id\n)\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    COALESCE(b.earliest_built_year, m.earliest_built_year) AS oldest_work_year\nFROM architect a\nLEFT JOIN bridge_stats b ON a.id = b.architect_id\nLEFT JOIN mill_stats m ON a.id = m.architect_id\nORDER BY a.name;\n---\n\n\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    ams.earliest_built_year AS oldest_work_year\nFROM architect a\nLEFT JOIN architect_mill_stats ams ON a.id = ams.architect_id\nWHERE ams.architect_id IS NOT NULL\nUNION ALL\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    m.built_year AS oldest_work_year\nFROM architect a\nJOIN mill m ON a.id = m.architect_id\nORDER BY a.name;\n---\n\n\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    CASE\n        WHEN ams.earliest_built_year IS NOT NULL THEN ams.earliest_built_year\n        ELSE m.built_year\n    END AS oldest_work_year\nFROM architect a\nLEFT JOIN architect_mill_stats ams ON a.id = ams.architect_id\nLEFT JOIN mill m ON a.id = m.architect_id\nWHERE ams.earliest_built_year IS NULL OR m.built_year IS NOT NULL\nORDER BY a.name;\n---\n\n**Final, accurate and concise:**\n\n\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nationality2,\n    a.gender,\n    COALESCE(ams.earliest_built_year, m.built_year) AS oldest_work_year\nFROM architect a\nLEFT JOIN architect_mill_stats ams ON a.id = ams.architect_id\nLEFT JOIN mill m ON a.id = m.architect_id\nWHERE ams.earliest_built_year IS NULL OR m.built_year IS NOT NULL\nORDER BY a.name;",
+      "ambiguities": [
+        {
+          "phrase": "List architects and their oldest work",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The query should list architects with their oldest work, considering both bridges and mills.",
+          "plausible_alternative": "The query might be interpreted to list only the oldest work per architect, regardless of type, or only the oldest work of a specific type.",
+          "evidence_from_sql": "The SQL uses a UNION ALL to combine results from two different types of works (bridges and mills), indicating an intent to consider both types."
+        },
+        {
+          "phrase": "List architects and their oldest work",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Temporal",
+          "assumption_made": "The oldest work is determined by the earliest built year.",
+          "plausible_alternative": "The query might be interpreted to consider the oldest work based on insertion into the database or another temporal aspect.",
+          "evidence_from_sql": "The SQL uses COALESCE to select the earliest built year between 'earliest_built_year' from 'architect_mill_stats' and 'built_year' from 'mill', indicating a focus on the built year."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent"
+        }
+      ],
+      "validation": {
+        "valid": false,
+        "error": "Invalid expression / Unexpected token. Line 35, Col: 18.\n  , m.location, m.type, m.built_year, ams.earliest_built_year\nORDER BY\n    a.name;\n\n\n**Corrected Query\u001b[4m:\u001b[0m**\n\n\nSELECT\n    a.id AS architect_id,\n    a.name AS architect_name,\n    a.nationality1,\n    a.nation"
+      }
+    },
+    {
+      "id": 91,
+      "question": "Show mills built in the mid 19th century",
+      "sql": "SELECT m.id, m.name, m.location, m.type, m.built_year\nFROM mill m\nWHERE m.built_year BETWEEN 1850 AND 1899;",
+      "ambiguities": [
+        {
+          "phrase": "Show mills built in the mid 19th century",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Temporal",
+          "assumption_made": "The query assumes 'mid 19th century' refers to the years 1850 to 1899.",
+          "plausible_alternative": "'Mid 19th century' could be interpreted as 1825 to 1874, which is the central 50 years of the century.",
+          "evidence_from_sql": "The SQL query uses 'BETWEEN 1850 AND 1899' to define the temporal scope."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Temporal"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 92,
+      "question": "Find bridges designed by architects with secondary nationality British",
+      "sql": "SELECT b.id, b.name, b.location, b.length_meters, b.length_feet\nFROM bridge b\nJOIN architect a ON b.architect_id = a.id\nJOIN architect_mill_stats ams ON a.id = ams.architect_id\nWHERE a.nationality2 = 'British';",
+      "ambiguities": [
+        {
+          "phrase": "architects with secondary nationality British",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Scope",
+          "assumption_made": "The question is interpreted to mean architects with a secondary nationality of British, excluding those who might only have a primary nationality of British.",
+          "plausible_alternative": "The question could also be interpreted to include architects whose primary nationality is British, or those with any British connection.",
+          "evidence_from_sql": "WHERE a.nationality2 = 'British';"
+        },
+        {
+          "phrase": "Find bridges designed by architects with secondary nationality British",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Attachment",
+          "assumption_made": "The phrase 'with secondary nationality British' is attached specifically to 'architects', implying that only the secondary nationality field is considered.",
+          "plausible_alternative": "The phrase could be interpreted to apply to the entire clause, suggesting a broader interpretation of nationality.",
+          "evidence_from_sql": "JOIN architect a ON b.architect_id = a.id"
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Schema Ambiguity",
+          "subtype": "Column"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 93,
+      "question": "Show architects who built both bridges and mills",
+      "sql": "SELECT a.id, a.name, a.nationality1, a.nationality2, a.gender\nFROM architect a\nJOIN bridge b ON a.id = b.architect_id\nJOIN architect_mill_stats m ON a.id = m.architect_id\nJOIN mill ml ON ml.architect_id = m.architect_id\nWHERE m.mill_count > 0;",
+      "ambiguities": [
+        {
+          "phrase": "built both bridges and mills",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The query assumes that architects must have at least one bridge and one mill associated with their ID.",
+          "plausible_alternative": "The query could be interpreted as needing to show architects who have designed at least one bridge and at least one mill, regardless of the total number.",
+          "evidence_from_sql": "The SQL uses 'JOIN' on both 'bridge' and 'architect_mill_stats', and 'architect_mill_stats' includes a condition 'WHERE m.mill_count > 0', indicating architects must have at least one mill."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Schema Ambiguity",
+          "subtype": "Join"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 94,
+      "question": "List the names of architects who have an empty string recorded for nationality2.",
+      "sql": "SELECT name\nFROM architect\nWHERE nationality2 = '';",
+      "ambiguities": [
+        {
+          "phrase": "List the names of architects who have an empty string recorded for nationality2.",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The question intends to filter architects with an empty 'nationality2' field.",
+          "plausible_alternative": "The question might be asking for architects with a specific nationality in 'nationality2' or for those with no record in either 'nationality1' or 'nationality2'.",
+          "evidence_from_sql": "The generated SQL explicitly filters using 'nationality2 = ''', which assumes the intent was to find empty strings in the 'nationality2' column."
+        }
+      ],
+      "expected_ambiguities": [],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 95,
+      "question": "Find the total bridge length per iranian architect",
+      "sql": "SELECT\n    a.name AS architect_name,\n    SUM(b.length_meters) AS total_bridge_length_meters,\n    SUM(b.length_feet) AS total_bridge_length_feet\nFROM\n    architect a\nJOIN\n    bridge b ON a.id = b.architect_id\nWHERE\n    a.nationality1 = 'Iranian' OR a.nationality2 = 'Iranian'\nGROUP BY\n    a.id, a.name;",
+      "ambiguities": [
+        {
+          "phrase": "Find the total bridge length per iranian architect",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Value",
+          "assumption_made": "The question assumes 'Iranian' refers to 'nationality1' or 'nationality2' in the architect table.",
+          "plausible_alternative": "The question could be interpreted as requiring architects who are exclusively Iranian, or having other criteria for 'Iranian'.",
+          "evidence_from_sql": "WHERE a.nationality1 = 'Iranian' OR a.nationality2 = 'Iranian'"
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Schema Ambiguity",
+          "subtype": "Column"
+        },
+        {
+          "type": "Schema Ambiguity",
+          "subtype": "Aggregate"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 96,
+      "question": "Show the earliest bridge designed",
+      "sql": "SELECT b.id, b.name, b.location, b.length_meters, b.length_feet\nFROM bridge b\nJOIN architect_mill_stats ams ON b.architect_id = ams.architect_id\nWHERE b.length_meters = (\n    SELECT MIN(length_meters)\n    FROM bridge\n    WHERE architect_id IN (SELECT architect_id FROM architect_mill_stats)\n);",
+      "ambiguities": [
+        {
+          "phrase": "Show the earliest bridge designed",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The question implies selecting a single bridge with the smallest 'length_meters' value, rather than all bridges sorted by 'length_meters' or bridges meeting some other criterion for 'earliest'.",
+          "plausible_alternative": "The question could have intended to list all bridges sorted by 'length_meters' in ascending order.",
+          "evidence_from_sql": "The generated SQL uses a subquery to select the minimum 'length_meters' value, indicating the intent to retrieve a single bridge rather than a sorted list."
+        },
+        {
+          "phrase": "Show the earliest bridge designed",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Temporal",
+          "assumption_made": "The question's use of 'earliest' is assumed to refer to 'length_meters' rather than a temporal attribute like a design or construction date, which is not present in the schema.",
+          "plausible_alternative": "The question might have intended to refer to the earliest 'built_year' or design date, if such data were available.",
+          "evidence_from_sql": "The SQL query does not reference any temporal attributes, indicating that 'earliest' was interpreted as the smallest 'length_meters' value."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Temporal"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 97,
+      "question": "Show all structures with their names",
+      "sql": "SELECT\n    b.id AS bridge_id,\n    b.name AS bridge_name,\n    m.id AS mill_id,\n    m.name AS mill_name,\n    b.location AS location\nFROM\n    bridge b\nLEFT JOIN\n    mill m ON b.architect_id = m.architect_id\nWHERE\n    m.id IS NULL OR m.id IS NOT NULL;",
+      "ambiguities": [
+        {
+          "phrase": "Show all structures with their names",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Table",
+          "assumption_made": "The term 'structures' includes both bridges and mills.",
+          "plausible_alternative": "The term 'structures' could refer only to bridges, only to mills, or some other subset of the database.",
+          "evidence_from_sql": "The SQL query selects from both 'bridge' and 'mill' tables using a LEFT JOIN on 'architect_id'."
+        },
+        {
+          "phrase": "Show all structures with their names",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The query intends to list all names of bridges and mills without filtering.",
+          "plausible_alternative": "The query could intend to filter structures by certain criteria such as location or architect.",
+          "evidence_from_sql": "The SQL query does not apply any WHERE clause filtering beyond ensuring 'm.id IS NULL OR m.id IS NOT NULL', which effectively includes all rows."
+        },
+        {
+          "phrase": "Show all structures with their names",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Scope",
+          "assumption_made": "The scope includes all entries in both the 'bridge' and 'mill' tables.",
+          "plausible_alternative": "The scope might only include structures designed by certain architects or within certain locations.",
+          "evidence_from_sql": "The SQL query selects all rows from 'bridge' and uses a LEFT JOIN to include all related 'mill' rows, covering the full scope of both tables."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Schema Ambiguity",
+          "subtype": "Table"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 98,
+      "question": "List architects who designed all structures in Colorado",
+      "sql": "SELECT a.id, a.name, a.nationality1, a.nationality2, a.gender\nFROM architect a\nWHERE a.id IN (\n    SELECT architect_id\n    FROM bridge\n    WHERE location LIKE '%Colorado%'\n)\nAND a.id IN (\n    SELECT architect_id\n    FROM mill\n    WHERE architect_id IN (\n        SELECT architect_id\n        FROM architect_mill_stats\n        WHERE mill_count = (\n            SELECT COUNT(*)\n            FROM mill\n            WHERE architect_id IN (\n                SELECT architect_id\n                FROM bridge\n                WHERE location LIKE '%Colorado%'\n            )\n        )\n    )\n);",
+      "ambiguities": [
+        {
+          "phrase": "List architects who designed all structures in Colorado",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Scope",
+          "assumption_made": "Architects must have designed every structure located in Colorado, not just some or a majority.",
+          "plausible_alternative": "The question might be asking for architects who designed at least one structure in Colorado.",
+          "evidence_from_sql": "The SQL uses 'a.id IN (SELECT architect_id FROM bridge WHERE location LIKE '%Colorado%')' to filter architects by bridges in Colorado and then checks if they designed all mills associated with bridges in Colorado."
+        },
+        {
+          "phrase": "List architects who designed all structures in Colorado",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Attachment",
+          "assumption_made": "The phrase 'all structures' is interpreted as applying to both bridges and mills.",
+          "plausible_alternative": "The question might only refer to bridges, not including mills.",
+          "evidence_from_sql": "The SQL includes both 'bridge' and 'mill' tables to identify architects who designed all structures in Colorado."
+        },
+        {
+          "phrase": "List architects who designed all structures in Colorado",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Value",
+          "assumption_made": "The term 'Colorado' in the location field is assumed to match exactly or partially with 'location LIKE '%Colorado%'.",
+          "plausible_alternative": "The question might be interpreted to include more specific location checks or different formatting.",
+          "evidence_from_sql": "The SQL uses 'location LIKE '%Colorado%'' to filter locations, assuming this pattern matches all relevant entries in the database."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Scope"
+        },
+        {
+          "type": "Schema Ambiguity",
+          "subtype": "Table"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 99,
+      "question": "Find mills with notes mentioning Dutch",
+      "sql": "SELECT m.id, m.name, m.location, m.notes\nFROM mill m\nWHERE m.notes LIKE '%Molenechos (Dutch)%';",
+      "ambiguities": [
+        {
+          "phrase": "Find mills with notes mentioning Dutch",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The query intends to filter mills based on the presence of the substring 'Molenechos (Dutch)' in the notes column.",
+          "plausible_alternative": "The query might intend to filter based on a broader or different keyword related to 'Dutch', such as 'Dutch' alone or 'Dutch-related' notes.",
+          "evidence_from_sql": "The SQL uses m.notes LIKE '%Molenechos (Dutch)%' to filter the mills."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Data Ambiguity",
+          "subtype": "Value"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 100,
+      "question": "Show the most important structures designed by Le Corbusier",
+      "sql": "SELECT b.name AS bridge_name, b.location AS bridge_location, b.length_meters AS length_meters\nFROM bridge b\nJOIN architect a ON b.architect_id = a.id\nWHERE a.name = 'Le Corbusier'\n   AND b.id IN (\n       SELECT id FROM bridge\n       WHERE architect_id IN (\n           SELECT architect_id FROM architect_mill_stats\n           WHERE architect_id = (\n               SELECT id FROM architect WHERE name = 'Le Corbusier'\n           )\n       )\n   )\nORDER BY b.length_meters DESC\nLIMIT 1;",
+      "ambiguities": [
+        {
+          "phrase": "Show the most important structures",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The 'most important' structures are interpreted as those with the longest length in meters.",
+          "plausible_alternative": "The 'most important' structures could be interpreted as those with the highest significance based on other criteria such as historical importance, number of structures, or other attributes.",
+          "evidence_from_sql": "ORDER BY b.length_meters DESC LIMIT 1; indicates sorting by length and selecting the top entry."
+        },
+        {
+          "phrase": "designed by Le Corbusier",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "It is assumed that 'designed by Le Corbusier' refers to bridges only, excluding mills.",
+          "plausible_alternative": "It could also refer to mills or any other structures associated with Le Corbusier.",
+          "evidence_from_sql": "The SQL query focuses solely on the bridge table and does not include the mill table."
+        },
+        {
+          "phrase": "designed by Le Corbusier",
+          "type": "Schema Ambiguity",
+          "subtype": "Join",
+          "assumption_make": "Assumes a direct join between architect and bridge tables based on architect_id.",
+          "plausible_alternative": "If the schema had additional tables or relationships, other joins might be possible.",
+          "evidence_from_sql": "JOIN architect a ON b.architect_id = a.id;"
+        },
+        {
+          "phrase": "designed by Le Corbusier",
+          "type": "Data Ambiguity",
+          "subtype": "Value",
+          "assumption_made": "Assumes that the name 'Le Corbusier' in the architect table exactly matches the input question.",
+          "plausible_alternative": "It could involve different case sensitivity, spelling variations, or aliases.",
+          "evidence_from_sql": "WHERE a.name = 'Le Corbusier'; indicates exact match on the name field."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 101,
+      "question": "Show bridges with a measurement under 70",
+      "sql": "SELECT b.id, b.name, b.location, b.length_meters, b.length_feet\nFROM bridge b\nWHERE b.length_meters < 70 OR b.length_feet < 70;",
+      "ambiguities": [
+        {
+          "phrase": "Show bridges with a measurement under 70",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The question implies filtering bridges with either length in meters or feet less than 70, without specifying a preference for one unit over the other.",
+          "plausible_alternative": "The question could have intended to filter bridges with either length in meters or feet specifically under 70, not both.",
+          "evidence_from_sql": "The SQL query uses 'b.length_meters < 70 OR b.length_feet < 70' to filter the results, indicating an assumption that either measurement can be used to determine if a bridge's measurement is under 70."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 102,
+      "question": "List architects who designed mills in Pousset or bridges in China",
+      "sql": "SELECT DISTINCT a.id, a.name, a.nationality1, a.nationality2, a.gender\nFROM architect a\nJOIN mill m ON a.id = m.architect_id\nJOIN architect_mill_stats ams ON a.id = ams.architect_id\nWHERE m.location LIKE '%Pousset%'\n   OR EXISTS (\n       SELECT 1\n       FROM bridge b\n       WHERE b.architect_id = a.id\n       AND b.location LIKE '%China%'\n   );",
+      "ambiguities": [
+        {
+          "phrase": "architects who designed mills in Pousset",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Attachment",
+          "assumption_made": "The question assumes architects are associated with mills specifically located in 'Pousset' based on the 'location' field.",
+          "plausible_alternative": "The question might intend to identify architects associated with mills having 'Pousset' in their names or other attributes.",
+          "evidence_from_sql": "The SQL uses `WHERE m.location LIKE '%Pousset%'` to filter mills by location."
+        },
+        {
+          "phrase": "bridges in China",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Attachment",
+          "assumption_made": "The question assumes 'China' refers to the 'location' field in the 'bridge' table.",
+          "plausible_alternative": "The question could be interpreted to mean bridges designed by architects with 'China' in their nationality or another attribute.",
+          "evidence_from_sql": "The SQL uses `b.location LIKE '%China%'` within an EXISTS clause to identify bridges in China."
+        },
+        {
+          "phrase": "List architects who designed mills in Pousset or bridges in China",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The SQL assumes a logical OR between the two conditions, implying either condition is sufficient for inclusion.",
+          "plausible_alternative": "The question might intend a more complex logical relationship or filtering criteria between the two conditions.",
+          "evidence_from_sql": "The SQL uses `OR` to combine the conditions for mills in Pousset and bridges in China."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Attachment"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 103,
+      "question": "Find the average construction year for Frank Lloyd Wright's mills",
+      "sql": "SELECT avg_built_year\nFROM architect_mill_stats\nWHERE architect_id IN (\n    SELECT id FROM architect WHERE name = 'Frank Lloyd Wright'\n);",
+      "ambiguities": [
+        {
+          "phrase": "Find the average construction year for Frank Lloyd Wright's mills",
+          "type": "Schema Ambiguity",
+          "subtype": "Aggregate",
+          "assumption_made": "The average construction year for Frank Lloyd Wright's mills is precomputed in the 'architect_mill_stats' table.",
+          "plausible_alternative": "The average construction year for Frank Lloyd Wright's mills could be computed by directly aggregating the 'built_year' values from the 'mill' table for mills associated with Frank Lloyd Wright.",
+          "evidence_from_sql": "The generated SQL uses the 'architect_mill_stats' table to retrieve the 'avg_built_year', assuming it contains the precomputed average built year for each architect."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Schema Ambiguity",
+          "subtype": "Aggregate"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 104,
+      "question": "Show structures in Europe",
+      "sql": "SELECT b.id, b.name, b.location, b.length_meters, b.length_feet\nFROM bridge b\nWHERE\n    (b.location LIKE '%Europe%')\n    OR (\n        (SELECT location FROM bridge WHERE architect_id = b.architect_id)\n        LIKE '%Europe%'\n    );",
+      "ambiguities": [
+        {
+          "phrase": "Show structures in Europe",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Value",
+          "assumption_made": "The term 'Europe' in the location field is consistently represented in a way that the LIKE '%Europe%' pattern will match.",
+          "plausible_alternative": "The term 'Europe' might be represented differently, such as 'EU', 'E.U.', or as part of a larger string not containing the word 'Europe'.",
+          "evidence_from_sql": "The generated SQL uses 'LIKE '%Europe%'' to filter the location, assuming that 'Europe' is a substring in the location field for European structures."
+        },
+        {
+          "phrase": "Show structures in Europe",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The question intends to list both bridges and mills located in Europe, but the generated SQL only addresses bridges.",
+          "plausible_alternative": "The question might intend to list all structures, including mills, located in Europe.",
+          "evidence_from_sql": "The SQL query only selects from the 'bridge' table, ignoring the 'mill' table, which might also contain relevant structures."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Data Ambiguity",
+          "subtype": "Value"
+        },
+        {
+          "type": "Schema Ambiguity",
+          "subtype": "Table"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 105,
+      "question": "Find the longest span among all bridges",
+      "sql": "SELECT MAX(\"length_meters\") AS longest_span_meters,\n       \"name\" AS bridge_name,\n       \"location\" AS bridge_location\nFROM \"bridge\"\nWHERE \"length_meters\" = (SELECT MAX(\"length_meters\") FROM \"bridge\");",
+      "ambiguities": [
+        {
+          "phrase": "Find the longest span among all bridges",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The query assumes finding the single longest span bridge rather than multiple bridges with the same longest span.",
+          "plausible_alternative": "The query could also intend to list all bridges that share the maximum length.",
+          "evidence_from_sql": "The SQL uses MAX(length_meters) in a WHERE clause to filter for the single longest bridge, implying the intent to find just one bridge with the maximum length."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 106,
+      "question": "List mills from the late 1800s",
+      "sql": "SELECT m.id, m.name, m.location, m.type, m.built_year\nFROM mill m\nWHERE m.built_year >= 1800 AND m.built_year < 1900;",
+      "ambiguities": [
+        {
+          "phrase": "List mills from the late 1800s",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Temporal",
+          "assumption_made": "The question refers to mills built in the time frame of 1800 to 1899, which is considered the 'late 1800s'.",
+          "plausible_alternative": "The phrase could alternatively mean the very end of the 1800s, specifically the years 1890 to 1899, or it could be interpreted more generally as any mill built in the latter half of the 19th century.",
+          "evidence_from_sql": "WHERE m.built_year >= 1800 AND m.built_year < 1900"
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Temporal"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 107,
+      "question": "Show architects that designed every mill",
+      "sql": "SELECT a.id, a.name, a.nationality1, a.nationality2, a.gender\nFROM architect a\nJOIN architect_mill_stats am ON a.id = am.architect_id\nWHERE am.mill_count = (SELECT COUNT(*) FROM mill m WHERE m.architect_id = a.id);",
+      "ambiguities": [
+        {
+          "phrase": "Show architects that designed every mill",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Scope",
+          "assumption_made": "The question implies that the architect must have designed all the mills in the database.",
+          "plausible_alternative": "The question could mean architects who designed any mill, or all mills they are associated with in the database.",
+          "evidence_from_sql": "The SQL uses 'WHERE am.mill_count = (SELECT COUNT(*) FROM mill m WHERE m.architect_id = a.id)' which assumes the architect must have designed the total number of mills present in the database."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Scope"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 108,
+      "question": "Find all structures built after 1840",
+      "sql": "SELECT\n    b.id AS bridge_id,\n    b.name AS bridge_name,\n    b.location AS bridge_location,\n    b.length_meters AS length_meters,\n    b.length_feet AS length_feet,\n    m.id AS mill_id,\n    m.name AS mill_name,\n    m.location AS mill_location,\n    m.type AS mill_type,\n    m.built_year AS mill_built_year,\n    m.notes AS mill_notes\nFROM\n    bridge b\nJOIN\n    mill m ON b.architect_id = m.architect_id\nWHERE\n    m.built_year > 1840;",
+      "ambiguities": [
+        {
+          "phrase": "Find all structures built after 1840",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Scope",
+          "assumption_made": "The query assumes 'structures' refers only to mills.",
+          "plausible_alternative": "The query could refer to both mills and bridges.",
+          "evidence_from_sql": "The SQL query uses 'mill.built_year > 1840', ignoring the 'bridge' table entirely."
+        },
+        {
+          "phrase": "Find all structures built after 1840",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The query assumes that 'structures built after 1840' means only those with a specific 'built_year' column.",
+          "plausible_alternative": "The intent could be to include any structure with a relevant date attribute, such as bridges' construction dates if available.",
+          "evidence_from_sql": "The SQL query filters only on 'm.built_year > 1840', not considering any date-related attributes from the 'bridge' table."
+        },
+        {
+          "phrase": "Find all structures built after 1840",
+          "type": "Schema Ambiguity",
+          "subtype": "Join",
+          "assumption_make": "The query assumes that only mills have a 'built_year' attribute and that they relate to bridges via architect_id.",
+          "plausible_alternative": "The query could have used a more explicit join logic to include both mills and bridges if both had relevant date attributes.",
+          "evidence_from_sql": "The SQL query joins 'bridge' and 'mill' on 'architect_id' but only filters on 'mill.built_year > 1840', not considering any date attribute from 'bridge'."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Schema Ambiguity",
+          "subtype": "Table"
+        },
+        {
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Scope"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    },
+    {
+      "id": 109,
+      "question": "Show architects who designed bridges with length over 100",
+      "sql": "SELECT a.id, a.name, a.nationality1, a.nationality2, a.gender\nFROM architect a\nJOIN bridge b ON a.id = b.architect_id\nWHERE b.length_meters > 100;",
+      "ambiguities": [
+        {
+          "phrase": "Show architects who designed bridges with length over 100",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The question assumes the length of interest is in meters, as it directly uses `b.length_meters` in the WHERE clause.",
+          "plausible_alternative": "The question could have intended to reference length in feet, using `b.length_feet > 100` instead.",
+          "evidence_from_sql": "The SQL query uses `b.length_meters > 100` to filter bridges."
+        },
+        {
+          "phrase": "Show architects who designed bridges with length over 100",
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent",
+          "assumption_made": "The question assumes that all architects designed at least one bridge, as it does not explicitly handle architects with no bridges over 100 meters.",
+          "plausible_alternative": "The question could be intended to list only those architects who have designed at least one qualifying bridge, which is consistent with the generated SQL.",
+          "evidence_from_sql": "The SQL query uses a JOIN between `architect` and `bridge` tables, implying the assumption that architects have associated bridges."
+        }
+      ],
+      "expected_ambiguities": [
+        {
+          "type": "Linguistic & Semantic Ambiguity",
+          "subtype": "Intent"
+        },
+        {
+          "type": "Schema Ambiguity",
+          "subtype": "Column"
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "error": null
+      }
+    }
+  ],
+  "evaluation": {
+    "queries": 100,
+    "type_metrics": {
+      "true_positive": 67,
+      "false_positive": 46,
+      "false_negative": 33,
+      "precision": 0.593,
+      "recall": 0.67,
+      "f1": 0.629
+    },
+    "subtype_metrics": {
+      "true_positive": 58,
+      "false_positive": 86,
+      "false_negative": 48,
+      "precision": 0.403,
+      "recall": 0.547,
+      "f1": 0.464
+    },
+    "ambiguity_count": {
+      "exact_matches": 49,
+      "total": 100,
+      "accuracy": 0.49
+    }
+  }
+}

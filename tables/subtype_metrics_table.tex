@@ -1,0 +1,19 @@
+\begin{table}[htbp]
+  \centering
+  \begin{tabular}{l c c c}
+    & precision & recall & f1-score \\
+    \midrule
+    No Ambiguity   & 0.25 & 0.05 & 0.09 \\
+    Scope          & 0.32 & 0.60 & 0.41 \\
+    Attachment     & 0.23 & 0.71 & 0.34 \\
+    Intent         & 0.40 & 0.96 & 0.57 \\
+    Temporal       & 0.65 & 0.85 & 0.73 \\
+    Column         & 0.00 & 0.00 & 0.00 \\
+    Table          & 1.00 & 0.21 & 0.35 \\
+    Join           & 0.00 & 0.00 & 0.00 \\
+    Aggregate      & 1.00 & 0.50 & 0.67 \\
+    Value          & 0.50 & 0.90 & 0.64 \\
+  \end{tabular}
+  \caption{Per-subtype ambiguity classification performance metrics.}
+  \label{tab:subtype_metrics}
+\end{table}

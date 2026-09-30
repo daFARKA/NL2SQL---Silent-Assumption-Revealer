@@ -1,0 +1,21 @@
+\begin{table}[htbp]
+  \centering
+  \small
+  \setlength{\tabcolsep}{4pt}
+  \begin{tabular}{lrrrrrrrrrr}
+    \makecell{Expected \\ / \\ Predicted} & \rotatebox{60}{No Ambiguity} & \rotatebox{60}{Scope} & \rotatebox{60}{Attachment} & \rotatebox{60}{Intent} & \rotatebox{60}{Temporal} & \rotatebox{60}{Column} & \rotatebox{60}{Table} & \rotatebox{60}{Join} & \rotatebox{60}{Aggregate} & \rotatebox{60}{Value} \\
+    \midrule
+    No Ambiguity   & \cellcolor{blue!3}0.05 & \cellcolor{blue!11}0.18 & \cellcolor{blue!5}0.09 & \cellcolor{blue!24}0.40 & \cellcolor{blue!6}0.11 & 0.00 & 0.00 & \cellcolor{blue!3}0.05 & 0.00 & \cellcolor{blue!7}0.12 \\
+    Scope          & 0.00 & \cellcolor{blue!36}0.60 & \cellcolor{blue!6}0.10 & \cellcolor{blue!18}0.30 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 \\
+    Attachment     & 0.00 & 0.00 & \cellcolor{blue!43}0.71 & \cellcolor{blue!9}0.14 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 & \cellcolor{blue!9}0.14 \\
+    Intent         & 0.00 & \cellcolor{blue!2}0.04 & 0.00 & \cellcolor{blue!58}0.96 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 \\
+    Temporal       & 0.00 & 0.00 & 0.00 & \cellcolor{blue!9}0.15 & \cellcolor{blue!51}0.85 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 \\
+    Column         & \cellcolor{blue!20}0.33 & \cellcolor{blue!4}0.07 & \cellcolor{blue!20}0.33 & \cellcolor{blue!12}0.20 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 & \cellcolor{blue!4}0.07 \\
+    Table          & \cellcolor{blue!4}0.07 & \cellcolor{blue!4}0.07 & \cellcolor{blue!21}0.36 & \cellcolor{blue!13}0.21 & 0.00 & 0.00 & \cellcolor{blue!13}0.21 & \cellcolor{blue!4}0.07 & 0.00 & 0.00 \\
+    Join           & \cellcolor{blue!30}0.50 & 0.00 & \cellcolor{blue!15}0.25 & \cellcolor{blue!15}0.25 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 \\
+    Aggregate      & \cellcolor{blue!15}0.25 & 0.00 & 0.00 & 0.00 & 0.00 & \cellcolor{blue!15}0.25 & 0.00 & 0.00 & \cellcolor{blue!30}0.50 & 0.00 \\
+    Value          & 0.00 & 0.00 & 0.00 & \cellcolor{blue!6}0.10 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 & \cellcolor{blue!54}0.90 \\
+  \end{tabular}
+  \caption{Row-normalized confusion matrix across ambiguity subtypes and clean queries (\textit{No Ambiguity}). Rows represent ground-truth annotations, while columns represent system predictions. Cell shading indicates the proportion of predictions within each ground-truth class.}
+  \label{tab:subtype_confusion_matrix}
+\end{table}

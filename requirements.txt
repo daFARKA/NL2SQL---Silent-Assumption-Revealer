@@ -1,3 +1,3 @@
-ollama
-sqlglot
-tqdm
+ollama>=0.6.2
+sqlglot>=30.8.0
+tqdm>=4.67.3

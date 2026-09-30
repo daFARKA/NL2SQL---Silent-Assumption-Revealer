@@ -11,15 +11,27 @@ from prompts import (
     ASSUMPTION_REVEAL_PROMPT
 )
 
-MODEL = "phi4:latest"
+MODEL_SQL = "ministral-3:3b"
+MODEL_REVEAL = "phi4:14b"
 
-def parse_args_input_path():
+def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("input", type=str, help="Path to the input JSON file containing queries")
+
+    parser.add_argument(
+        "input",
+        type=str,
+        help="Path to the input JSON file containing queries"
+    )
+
+    parser.add_argument(
+        "--baseline",
+        action="store_true",
+        help="Run the assumption revealer without providing generated SQL"
+    )
 
     args = parser.parse_args()
-    input_path = args.input
-    input_path = "inputs/" + input_path
+
+    input_path = "inputs/" + args.input
 
     try:
         with open(input_path, "r", encoding="utf-8") as f:
@@ -29,7 +41,7 @@ def parse_args_input_path():
     except json.JSONDecodeError:
         raise ValueError("Input file is not valid JSON")
 
-    return input_path
+    return args, input_path
 
 def load_schema(path):
     with open(path, "r", encoding="utf-8") as f:
@@ -41,9 +53,9 @@ def load_queries(path):
     
     return queries
 
-def call_ollama(prompt):
+def call_ollama(prompt, model_name):
     response = ollama.chat(
-        model=MODEL,
+        model=model_name,
         messages=[
             {
                 "role": "user",
@@ -75,7 +87,7 @@ def generate_sql(question, schema):
         question=question
     )
 
-    sql = call_ollama(prompt)
+    sql = call_ollama(prompt, MODEL_SQL)
 
     return clean_response(sql, "sql")
 
@@ -89,13 +101,16 @@ def validate_sql(sql):
 
 
 def reveal_assumptions(question, schema, sql):
+    if sql is None:
+        sql = "[No SQL provided]"
+
     prompt = ASSUMPTION_REVEAL_PROMPT.format(
         schema=schema,
         question=question,
         sql=sql
     )
 
-    response = call_ollama(prompt)
+    response = call_ollama(prompt, MODEL_REVEAL)
 
     response = clean_response(response, "json")
 
@@ -130,39 +145,43 @@ def evaluate_results(outputs):
         if not isinstance(actual, list):
             actual = []
 
-        expected_types = {a["type"] for a in expected}
-        predicted_types = {
-            a.get("type")
-            for a in actual
-            if a.get("type")
-        }
+        if len(expected) == 0 and len(actual) == 0:
+            tp_types += 1
+            tp_subtypes += 1
+        else:
+            expected_types = {a["type"] for a in expected}
+            predicted_types = {
+                a.get("type")
+                for a in actual
+                if a.get("type")
+            }
 
-        expected_subtypes = {
-            (a["type"], a["subtype"])
-            for a in expected
-            if a.get("type") and a.get("subtype")
-        }
-        predicted_subtypes = {
-            (a.get("type"), a.get("subtype"))
-            for a in actual
-            if a.get("type") and a.get("subtype")
-        }
+            expected_subtypes = {
+                (a["type"], a["subtype"])
+                for a in expected
+                if a.get("type") and a.get("subtype")
+            }
+            predicted_subtypes = {
+                (a.get("type"), a.get("subtype"))
+                for a in actual
+                if a.get("type") and a.get("subtype")
+            }
 
-        tp_t = len(expected_types & predicted_types)
-        fp_t = len(predicted_types - expected_types)
-        fn_t = len(expected_types - predicted_types)
+            tp_t = len(expected_types & predicted_types)
+            fp_t = len(predicted_types - expected_types)
+            fn_t = len(expected_types - predicted_types)
 
-        tp_s = len(expected_subtypes & predicted_subtypes)
-        fp_s = len(predicted_subtypes - expected_subtypes)
-        fn_s = len(expected_subtypes - predicted_subtypes)
+            tp_s = len(expected_subtypes & predicted_subtypes)
+            fp_s = len(predicted_subtypes - expected_subtypes)
+            fn_s = len(expected_subtypes - predicted_subtypes)
 
-        tp_types += tp_t
-        fp_types += fp_t
-        fn_types += fn_t
+            tp_types += tp_t
+            fp_types += fp_t
+            fn_types += fn_t
 
-        tp_subtypes += tp_s
-        fp_subtypes += fp_s
-        fn_subtypes += fn_s
+            tp_subtypes += tp_s
+            fp_subtypes += fp_s
+            fn_subtypes += fn_s
 
         count_match = len(expected) == len(actual)
         if count_match:
@@ -243,7 +262,7 @@ def write_output(outputs, timestamp):
     print(f"Saved results to {file_path}")
 
 def main():
-    input_path = parse_args_input_path()
+    args, input_path = parse_args()
 
     schema = load_schema("schema_architecture_adapted.sql")
 
@@ -251,19 +270,19 @@ def main():
 
     outputs = []
     for question in tqdm(queries, desc="Processing NL queries", unit="query"):
-        sql = generate_sql(question['query'], schema)
+        sql = None
+        valid = None
+        result = None
 
-        valid, result = validate_sql(sql)
+        if not args.baseline:
+            sql = generate_sql(question['query'], schema)
+            valid, result = validate_sql(sql)
 
-        if not valid:
-            tqdm.write(f"SQL validation failed for ID: {question['id']}")
-            tqdm.write(result)
+            if not valid:
+                tqdm.write(f"SQL validation failed for ID: {question['id']}")
+                tqdm.write(result)
 
-        assumptions = reveal_assumptions(
-            question['query'],
-            schema,
-            sql
-        )
+        assumptions = reveal_assumptions(question["query"], schema, sql)
 
         output = {
             "id": question['id'],
